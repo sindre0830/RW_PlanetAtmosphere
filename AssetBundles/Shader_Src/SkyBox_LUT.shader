@@ -57,11 +57,11 @@
                 float3 screen : TEXCOORD1;
             };
 
-            float4 _SunColor;
             sampler2D _GrabTexture;
 
             float4 groundColor;
             float4 mie_eccentricity;
+            float4 SunColor;
             
             float ground_refract;
             float ground_light;
@@ -368,7 +368,7 @@
             {
                 // const float3 OZoneAbsorbFactor = float3(0.21195,0.20962,0.01686);
                 // const float3 OZoneAbsorbFactor = float3(0.065,0.1881,0.0085);
-                float3 color = _SunColor;
+                float3 color = SunColor;
                 float3 sun = normalize(_WorldSpaceLightPos0.xyz);
                 float3 eye = normalize(i.uv);
                 float3 pos = _WorldSpaceCameraPos.xyz - mul(unity_ObjectToWorld, float4(0.0,0.0,0.0,1.0));
