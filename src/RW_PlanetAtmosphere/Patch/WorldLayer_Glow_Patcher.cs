@@ -14,8 +14,6 @@ namespace RW_PlanetAtmosphere.Patch
     internal static class WorldLayer_Glow_Patcher
     {
         private static MethodInfo WorldLayer_ClearSubMeshes = typeof(WorldLayer).GetMethod("ClearSubMeshes",BindingFlags.Instance | BindingFlags.NonPublic);
-        private static MethodInfo WorldLayer_GetSubMesh = typeof(WorldLayer).GetMethod("GetSubMesh",BindingFlags.Instance | BindingFlags.NonPublic);
-        private static MethodInfo WorldLayer_FinalizeMesh = typeof(WorldLayer).GetMethod("FinalizeMesh",BindingFlags.Instance | BindingFlags.NonPublic);
 
         private static AccessTools.FieldRef<WorldLayer,bool> WorldLayer_dirty = AccessTools.FieldRefAccess<WorldLayer,bool>("dirty");
 
