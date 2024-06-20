@@ -14,13 +14,15 @@ namespace RW_PlanetAtmosphere
         private MeshFilter meshFilter = null;
         private MeshRenderer meshRenderer = null;
         private Light light = null;
-        private Transform transform = null;
 
         protected override Quaternion Rotation
         {
             get
             {
-                if(transform != null) transform.forward = -GenCelestial.CurSunPositionInWorldSpace();
+                if(ShaderLoader.materialLUT != null && (ShaderLoader.materialLUT.shader?.isSupported ?? false))
+                {
+                    ShaderLoader.materialLUT.SetVector("_WorldSpaceLightPos0",GenCelestial.CurSunPositionInWorldSpace());
+                }
                 return base.Rotation;
             }
         }
@@ -42,11 +44,11 @@ namespace RW_PlanetAtmosphere
                         triangles = outIndices.ToArray()
                     };
                 }
+                
                 sky = sky ?? new GameObject("RW_PlanetAtmosphere");
                 meshFilter = meshFilter ?? sky.AddComponent<MeshFilter>();
                 meshRenderer = meshRenderer ?? sky.AddComponent<MeshRenderer>();
                 light = light ?? sky.AddComponent<Light>();
-                transform = transform ?? sky.transform;
                 sky.layer = WorldCameraManager.WorldLayer;
                 meshFilter.mesh = mesh;
                 meshRenderer.material = ShaderLoader.materialLUT;
