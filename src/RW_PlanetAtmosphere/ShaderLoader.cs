@@ -96,6 +96,7 @@ namespace RW_PlanetAtmosphere
             {
                 if(!Settings.updated && isEnable)
                 {
+                    Settings.updated = true;
                     materialLUT.SetFloat("mie_amount", Settings.mie_amount);
                     materialLUT.SetFloat("mie_absorb", Settings.mie_absorb);
                     materialLUT.SetFloat("H_Reayleigh", Settings.H_Reayleigh);
