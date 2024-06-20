@@ -14,10 +14,13 @@ namespace RW_PlanetAtmosphere.Patch
     internal static class WorldLayer_Glow_Patcher
     {
         private static MethodInfo WorldLayer_ClearSubMeshes = typeof(WorldLayer).GetMethod("ClearSubMeshes",BindingFlags.Instance | BindingFlags.NonPublic);
-        private static MethodInfo WorldLayer_GetSubMesh = typeof(WorldLayer).GetMethod("GetSubMesh",BindingFlags.Instance | BindingFlags.NonPublic);
-        private static MethodInfo WorldLayer_FinalizeMesh = typeof(WorldLayer).GetMethod("FinalizeMesh",BindingFlags.Instance | BindingFlags.NonPublic);
 
         private static AccessTools.FieldRef<WorldLayer,bool> WorldLayer_dirty = AccessTools.FieldRefAccess<WorldLayer,bool>("dirty");
+
+        private static Mesh mesh = new Mesh();
+        private static GameObject sky = null;
+        private static MeshFilter skyMesh = null;
+        private static MeshRenderer skyRanderer = null;
 
 
         [HarmonyPrefix]
@@ -40,10 +43,22 @@ namespace RW_PlanetAtmosphere.Patch
             WorldLayer_dirty(instance) = false;
             WorldLayer_ClearSubMeshes.Invoke(instance,new object[]{MeshParts.All});
             SphereGenerator.Generate(4, 1000f, Vector3.forward, 360f, out var outVerts, out var outIndices);
-            LayerSubMesh subMesh = (LayerSubMesh)WorldLayer_GetSubMesh.Invoke(instance,new object[]{ShaderLoader.materialLUT});
-            subMesh.verts.AddRange(outVerts);
-            subMesh.tris.AddRange(outIndices);
-            WorldLayer_FinalizeMesh.Invoke(instance,new object[]{MeshParts.All});
+            mesh = mesh ?? new Mesh();
+            if (UnityData.isEditor)
+            {
+                mesh.name = "WorldLayerSubMesh_" + instance.GetType().Name + "_" + Find.World.info.seedString;
+            }
+            mesh.vertices = outVerts.ToArray();
+            mesh.triangles = outIndices.ToArray();
+            if(sky == null)
+            {
+                sky = new GameObject();
+                skyMesh = sky.AddComponent<MeshFilter>();
+                skyRanderer = sky.AddComponent<MeshRenderer>();
+                sky.layer = WorldCameraManager.WorldLayer;
+            }
+            skyMesh.mesh = mesh;
+            skyRanderer.material = ShaderLoader.materialLUT;
             yield break;
         }
 
