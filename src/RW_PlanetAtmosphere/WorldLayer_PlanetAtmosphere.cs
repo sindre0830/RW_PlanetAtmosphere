@@ -13,7 +13,6 @@ namespace RW_PlanetAtmosphere
         private GameObject sky = null;
         private MeshFilter meshFilter = null;
         private MeshRenderer meshRenderer = null;
-        private Light light = null;
 
         protected override Quaternion Rotation
         {
@@ -48,19 +47,9 @@ namespace RW_PlanetAtmosphere
                 sky = sky ?? new GameObject("RW_PlanetAtmosphere");
                 meshFilter = meshFilter ?? sky.AddComponent<MeshFilter>();
                 meshRenderer = meshRenderer ?? sky.AddComponent<MeshRenderer>();
-                light = light ?? sky.AddComponent<Light>();
                 sky.layer = WorldCameraManager.WorldLayer;
                 meshFilter.mesh = mesh;
                 meshRenderer.material = ShaderLoader.materialLUT;
-                light.type = LightType.Directional;
-            }
-            else
-            {
-                SphereGenerator.Generate(4, 108.1f, Vector3.forward, 360f, out var outVerts, out var outIndices);
-                LayerSubMesh subMesh = GetSubMesh(WorldMaterials.PlanetGlow);
-                subMesh.verts.AddRange(outVerts);
-                subMesh.tris.AddRange(outIndices);
-                FinalizeMesh(MeshParts.All);
             }
         }
 

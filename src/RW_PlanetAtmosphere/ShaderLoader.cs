@@ -79,7 +79,7 @@ namespace RW_PlanetAtmosphere
                 materialLUT.SetFloat("H_Mie", materialLUT.GetFloat("H_Mie") * scale);
                 materialLUT.SetFloat("H_OZone", materialLUT.GetFloat("H_OZone") * scale);
                 materialLUT.SetFloat("D_OZone", materialLUT.GetFloat("D_OZone") * scale);
-                materialLUT.renderQueue = 3600;
+                materialLUT.renderQueue = 3545;
                 
                 translucentLUT = new RenderTexture(translucentLUTSize.x << 4, translucentLUTSize.y << 4, 0)
                 {
@@ -139,6 +139,11 @@ namespace RW_PlanetAtmosphere
                 materialLUT.SetTexture("translucentLUT", translucentLUT);
                 materialLUT.SetTexture("scatterLUT", scatterLUT);
                 materialLUT.SetVector("scatterLUT_Size", new Vector4((int)scatterLUTSize.x << 4, (int)scatterLUTSize.y << 4, (int)scatterLUTSize.z << 4, (int)scatterLUTSize.w << 4));
+
+
+                WorldMaterials.WorldOcean.color = new Color32(1,2,4,255);
+                WorldMaterials.UngeneratedPlanetParts.color = new Color32(1,2,4,255);
+                WorldMaterials.Rivers.color = new Color32(1,2,4,255);
             }
         }
     }
