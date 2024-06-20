@@ -50,13 +50,11 @@ namespace RW_PlanetAtmosphere.Patch
             }
             mesh.vertices = outVerts.ToArray();
             mesh.triangles = outIndices.ToArray();
-            if(sky == null)
-            {
-                sky = new GameObject("RW_PlanetAtmosphere_Randerer");
-                skyMesh = sky.AddComponent<MeshFilter>();
-                skyRanderer = sky.AddComponent<MeshRenderer>();
-                sky.layer = WorldCameraManager.WorldLayer;
-            }
+            Log.Message(mesh.name);
+            sky = sky ?? new GameObject("RW_PlanetAtmosphere_Randerer");
+            skyMesh = skyMesh ?? sky.AddComponent<MeshFilter>();
+            skyRanderer = skyRanderer ?? sky.AddComponent<MeshRenderer>();
+            sky.layer = WorldCameraManager.WorldLayer;
             skyMesh.mesh = mesh;
             skyRanderer.material = ShaderLoader.materialLUT;
             yield break;
