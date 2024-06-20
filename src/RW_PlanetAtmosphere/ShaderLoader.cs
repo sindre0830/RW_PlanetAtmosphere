@@ -106,13 +106,13 @@ namespace RW_PlanetAtmosphere
                     materialLUT.SetFloat("maxh", 99.85f + Mathf.Max
                     (
                         Settings.H_OZone + Settings.D_OZone,
-                        -Mathf.Log(0.0001f)*(Mathf.Max
+                        -Mathf.Log(0.00001f)*(Mathf.Max
                         (
                             Settings.reayleighScatterFactor.x,
                             Settings.reayleighScatterFactor.y,
                             Settings.reayleighScatterFactor.z
                         ) * Settings.H_Reayleigh),
-                        -Mathf.Log(0.0001f)*(Settings.mie_amount * (Settings.mie_absorb + 1.0f) * Settings.H_Mie)
+                        -Mathf.Log(0.00001f)*(Settings.mie_amount * (Settings.mie_absorb + 1.0f) * Settings.H_Mie)
                     ));
                     materialLUT.SetVector("reayleighScatterFactor", Settings.reayleighScatterFactor);
                     materialLUT.SetVector("OZoneAbsorbFactor", Settings.OZoneAbsorbFactor);

@@ -12,7 +12,7 @@ namespace RW_PlanetAtmosphere
         public static bool updated = false;
         public static float exposure = 4;
         public static float ground_refract = 1;
-        public static float ground_light = 0.05f;
+        public static float ground_light = 0.01f;
         public static float mie_amount = 3.996f/scale;
         public static float mie_absorb = 1.11f;
         public static float H_Reayleigh = 0.08f*scale;
@@ -34,7 +34,7 @@ namespace RW_PlanetAtmosphere
             base.ExposeData();
             Scribe_Values.Look(ref ground_refract, "ground_refract", defaultValue: 1, forceSave: true);
             Scribe_Values.Look(ref exposure, "exposure", defaultValue: 4, forceSave: true);
-            Scribe_Values.Look(ref ground_light, "ground_light", defaultValue: 0.05f, forceSave: true);
+            Scribe_Values.Look(ref ground_light, "ground_light", defaultValue: 0.01f, forceSave: true);
             Scribe_Values.Look(ref mie_amount, "mie_amount", defaultValue: 3.996f/scale, forceSave: true);
             Scribe_Values.Look(ref mie_absorb, "mie_absorb", defaultValue: 1.11f, forceSave: true);
             Scribe_Values.Look(ref H_Reayleigh, "H_Reayleigh", defaultValue: 0.08f*scale, forceSave: true);
