@@ -41,48 +41,4 @@ namespace RW_PlanetAtmosphere.Patch
         }
 
     }
-    public class WorldLayer_PlanetAtmosphere : WorldLayer
-    {
-        private GameObject sky = null;
-        private MeshFilter meshFilter = null;
-        private MeshRenderer meshRenderer = null;
-
-        public override void Render()
-        {
-            if(subMeshes.Count > 0)
-            {
-                LayerSubMesh subMesh = subMeshes[0];
-                if (subMesh.finalized)
-                {
-                    sky = sky ?? new GameObject("RW_PlanetAtmosphere");
-                    meshFilter = meshFilter ?? sky.AddComponent<MeshFilter>();
-                    meshRenderer = meshRenderer ?? sky.AddComponent<MeshRenderer>();
-                    sky.layer = WorldCameraManager.WorldLayer;
-                    meshFilter.mesh = subMesh.mesh;
-                    meshRenderer.material = subMesh.material;
-                }
-            }
-        }
-
-        public override IEnumerable Regenerate()
-        {
-            foreach (object item in base.Regenerate())
-            {
-                yield return item;
-            }
-            if(ShaderLoader.materialLUT != null && (ShaderLoader.materialLUT.shader?.isSupported ?? false))
-            {
-                SphereGenerator.Generate(4, 1000f, Vector3.forward, 360f, out var outVerts, out var outIndices);
-                LayerSubMesh subMesh = GetSubMesh(ShaderLoader.materialLUT);
-                subMesh.verts.AddRange(outVerts);
-                subMesh.tris.AddRange(outIndices);
-                FinalizeMesh(MeshParts.All);
-            }
-        }
-
-        ~WorldLayer_PlanetAtmosphere()
-        {
-            if(sky != null) GameObject.Destroy(sky);
-        }
-    }
 }
