@@ -35,7 +35,7 @@ namespace RW_PlanetAtmosphere
                     foreach (AssetBundle assetBundle in pack.assetBundles.loadedAssetBundles)
                     {
                         // Log.Message($"Loading shader in {assetBundle.name}");
-                        SkyBox_LUT = assetBundle.LoadAsset<Shader>(@"Assets\Data\Materials\RWNodeTree.RWPlanetAtmosphere\SkyBox_LUT.shader");
+                        SkyBox_LUT = assetBundle.LoadAsset<Shader>(@"Assets\Data\RWNodeTree.RWPlanetAtmosphere\SkyBox_LUT.shader");
                         if (SkyBox_LUT != null && SkyBox_LUT.isSupported)
                         {
                             loadedCount++;
@@ -45,7 +45,7 @@ namespace RW_PlanetAtmosphere
                     foreach (AssetBundle assetBundle in pack.assetBundles.loadedAssetBundles)
                     {
                         // Log.Message($"Loading shader in {assetBundle.name}");
-                        TranslucentGenrater = assetBundle.LoadAsset<Shader>(@"Assets\Data\Materials\RWNodeTree.RWPlanetAtmosphere\TranslucentGenrater.shader");
+                        TranslucentGenrater = assetBundle.LoadAsset<Shader>(@"Assets\Data\RWNodeTree.RWPlanetAtmosphere\TranslucentGenrater.shader");
                         if (TranslucentGenrater != null && TranslucentGenrater.isSupported)
                         {
                             loadedCount++;
@@ -55,7 +55,7 @@ namespace RW_PlanetAtmosphere
                     foreach (AssetBundle assetBundle in pack.assetBundles.loadedAssetBundles)
                     {
                         // Log.Message($"Loading shader in {assetBundle.name}");
-                        ScatterGenrater = assetBundle.LoadAsset<Shader>(@"Assets\Data\Materials\RWNodeTree.RWPlanetAtmosphere\ScatterGenrater.shader");
+                        ScatterGenrater = assetBundle.LoadAsset<Shader>(@"Assets\Data\RWNodeTree.RWPlanetAtmosphere\ScatterGenrater.shader");
                         if (ScatterGenrater != null && ScatterGenrater.isSupported)
                         {
                             loadedCount++;
