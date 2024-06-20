@@ -32,14 +32,14 @@ namespace RW_PlanetAtmosphere
             {
                 ShaderLoader.mesh.vertices = new Vector3[]
                 {
-                    new Vector3(-500,-500,-500),
-                    new Vector3( 500,-500,-500),
-                    new Vector3(-500, 500,-500),
-                    new Vector3( 500, 500,-500),
-                    new Vector3(-500,-500, 500),
-                    new Vector3( 500,-500, 500),
-                    new Vector3(-500, 500, 500),
-                    new Vector3( 500, 500, 500)
+                    new Vector3(-200,-200,-200),
+                    new Vector3( 200,-200,-200),
+                    new Vector3(-200, 200,-200),
+                    new Vector3( 200, 200,-200),
+                    new Vector3(-200,-200, 200),
+                    new Vector3( 200,-200, 200),
+                    new Vector3(-200, 200, 200),
+                    new Vector3( 200, 200, 200)
                 };
                 ShaderLoader.mesh.triangles = new int[]
                 {

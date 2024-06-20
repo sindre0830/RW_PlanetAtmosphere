@@ -3,6 +3,7 @@ using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.PlayerLoop;
 
 namespace RW_PlanetAtmosphere
 {
@@ -150,12 +151,25 @@ namespace RW_PlanetAtmosphere
                 mesh = new Mesh();
                 
                 sky = new GameObject("RW_PlanetAtmosphere");
+                sky.AddComponent<PlanetAtmosphere>();
                 meshFilter = sky.AddComponent<MeshFilter>();
                 meshRenderer = sky.AddComponent<MeshRenderer>();
                 sky.layer = WorldCameraManager.WorldLayer;
                 meshFilter.mesh = mesh;
                 meshRenderer.material = materialLUT;
                 Object.DontDestroyOnLoad(sky);
+            }
+        }
+
+
+        private class PlanetAtmosphere : MonoBehaviour
+        {
+            void Update()
+            {
+                if(materialLUT != null && (materialLUT.shader?.isSupported ?? false))
+                {
+                    Shader.SetGlobalVector("_WorldSpaceLightPos0",GenCelestial.CurSunPositionInWorldSpace());
+                }
             }
         }
     }
