@@ -52,7 +52,7 @@ namespace RW_PlanetAtmosphere.Patch
             mesh.triangles = outIndices.ToArray();
             if(sky == null)
             {
-                sky = new GameObject();
+                sky = new GameObject("RW_PlanetAtmosphere_Randerer");
                 skyMesh = sky.AddComponent<MeshFilter>();
                 skyRanderer = sky.AddComponent<MeshRenderer>();
                 sky.layer = WorldCameraManager.WorldLayer;
