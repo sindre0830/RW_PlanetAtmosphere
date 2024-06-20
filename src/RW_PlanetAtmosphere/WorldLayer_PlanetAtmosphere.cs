@@ -20,7 +20,7 @@ namespace RW_PlanetAtmosphere
         {
             get
             {
-                Quaternion rot = Quaternion.LookRotation(GenCelestial.CurSunPositionInWorldSpace());
+                if(transform != null) transform.forward = -GenCelestial.CurSunPositionInWorldSpace();
                 return base.Rotation;
             }
         }
@@ -51,7 +51,6 @@ namespace RW_PlanetAtmosphere
                 meshFilter.mesh = mesh;
                 meshRenderer.material = ShaderLoader.materialLUT;
                 light.type = LightType.Directional;
-                transform.rotation = Quaternion.LookRotation(-GenCelestial.CurSunPositionInWorldSpace());
             }
             else
             {
