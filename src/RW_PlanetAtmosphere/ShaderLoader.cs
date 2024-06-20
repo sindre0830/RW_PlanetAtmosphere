@@ -158,6 +158,7 @@ namespace RW_PlanetAtmosphere
                 meshFilter.mesh = mesh;
                 meshRenderer.material = materialLUT;
                 Object.DontDestroyOnLoad(sky);
+                WorldCameraManager.WorldCamera.fieldOfView = 60;
             }
         }
 
