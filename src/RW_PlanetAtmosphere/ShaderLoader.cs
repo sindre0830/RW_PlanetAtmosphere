@@ -190,6 +190,11 @@ namespace RW_PlanetAtmosphere
                 if(isEnable)
                 {
                     parmUpdated();
+                    materialLUT.SetFloat("exposure", Settings.exposure);
+                    materialLUT.SetFloat("ground_refract", Settings.ground_refract);
+                    materialLUT.SetFloat("ground_light", Settings.ground_light);
+                    materialLUT.SetVector("SunColor", Settings.SunColor);
+                    materialLUT.SetVector("mie_eccentricity", Settings.mie_eccentricity);
                     Shader.SetGlobalVector("_WorldSpaceLightPos0",GenCelestial.CurSunPositionInWorldSpace());
                 }
             }
