@@ -81,10 +81,10 @@ namespace RW_PlanetAtmosphere
                 sky.AddComponent<PlanetAtmosphere>();
                 meshFilter = sky.AddComponent<MeshFilter>();
                 meshRenderer = sky.AddComponent<MeshRenderer>();
+                Object.DontDestroyOnLoad(sky);
                 sky.layer = WorldCameraManager.WorldLayer;
                 meshFilter.mesh = mesh;
                 meshRenderer.material = materialLUT;
-                Object.DontDestroyOnLoad(sky);
                 WorldCameraManager.WorldCamera.fieldOfView = 60;
             }
         }
@@ -96,7 +96,6 @@ namespace RW_PlanetAtmosphere
             {
                 if(!Settings.updated && isEnable)
                 {
-                    Settings.updated = true;
                     materialLUT.SetFloat("mie_amount", Settings.mie_amount);
                     materialLUT.SetFloat("mie_absorb", Settings.mie_absorb);
                     materialLUT.SetFloat("H_Reayleigh", Settings.H_Reayleigh);
@@ -183,6 +182,7 @@ namespace RW_PlanetAtmosphere
                     WorldMaterials.WorldOcean.color = new Color32(1,2,4,255);
                     WorldMaterials.UngeneratedPlanetParts.color = new Color32(1,2,4,255);
                     WorldMaterials.Rivers.color = new Color32(1,2,4,255);
+                    Settings.updated = true;
                 }
             }
             void Update()

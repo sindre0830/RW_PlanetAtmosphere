@@ -25,7 +25,7 @@ namespace RW_PlanetAtmosphere.Patch
             )]
         private static bool PreWorldLayer_Glow_Regenerate(WorldLayer_Glow __instance, ref IEnumerable __result)
         {
-            if(ShaderLoader.materialLUT != null && (ShaderLoader.materialLUT.shader?.isSupported ?? false))
+            if(ShaderLoader.isEnable)
             {
                 __result = RegenerateOverider(__instance);
                 return false;
@@ -37,7 +37,7 @@ namespace RW_PlanetAtmosphere.Patch
         {
             WorldLayer_dirty(instance) = false;
             WorldLayer_ClearSubMeshes.Invoke(instance,new object[]{MeshParts.All});
-            if(ShaderLoader.materialLUT != null && (ShaderLoader.materialLUT.shader?.isSupported ?? false))
+            if(ShaderLoader.isEnable)
             {
                 ShaderLoader.mesh.vertices = new Vector3[]
                 {

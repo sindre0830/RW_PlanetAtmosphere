@@ -21,7 +21,7 @@ namespace RW_PlanetAtmosphere.Patch
             )]
         private static void PostWorldCameraDriver_get_MinAltitude(ref float __result)
         {
-            if(ShaderLoader.materialLUT != null && (ShaderLoader.materialLUT.shader?.isSupported ?? false))
+            if(ShaderLoader.isEnable)
             {
                 __result = 100f + (SteamDeck.IsSteamDeck ? 5f : 8f);
             }
