@@ -1,3 +1,4 @@
+using RimWorld;
 using RimWorld.Planet;
 using System.Collections;
 using UnityEngine;
@@ -8,29 +9,20 @@ namespace RW_PlanetAtmosphere
     
     public class WorldLayer_PlanetAtmosphere : WorldLayer
     {
+        private Mesh mesh;
         private GameObject sky = null;
         private MeshFilter meshFilter = null;
         private MeshRenderer meshRenderer = null;
+        private Light light = null;
+        private Transform transform = null;
 
-        public override void Render()
+        protected override Quaternion Rotation
         {
-            if(ShaderLoader.materialLUT != null && (ShaderLoader.materialLUT.shader?.isSupported ?? false))
+            get
             {
-                if(subMeshes.Count > 0)
-                {
-                    LayerSubMesh subMesh = subMeshes[0];
-                    if (subMesh.finalized)
-                    {
-                        sky = sky ?? new GameObject("RW_PlanetAtmosphere");
-                        meshFilter = meshFilter ?? sky.AddComponent<MeshFilter>();
-                        meshRenderer = meshRenderer ?? sky.AddComponent<MeshRenderer>();
-                        sky.layer = WorldCameraManager.WorldLayer;
-                        meshFilter.mesh = subMesh.mesh;
-                        meshRenderer.material = subMesh.material;
-                    }
-                }
+                Quaternion rot = Quaternion.LookRotation(GenCelestial.CurSunPositionInWorldSpace());
+                return base.Rotation;
             }
-            else base.Render();
         }
 
         public override IEnumerable Regenerate()
@@ -41,11 +33,25 @@ namespace RW_PlanetAtmosphere
             }
             if(ShaderLoader.materialLUT != null && (ShaderLoader.materialLUT.shader?.isSupported ?? false))
             {
-                SphereGenerator.Generate(4, 500f, Vector3.forward, 360f, out var outVerts, out var outIndices);
-                LayerSubMesh subMesh = GetSubMesh(ShaderLoader.materialLUT);
-                subMesh.verts.AddRange(outVerts);
-                subMesh.tris.AddRange(outIndices);
-                FinalizeMesh(MeshParts.All);
+                if(mesh == null)
+                {
+                    SphereGenerator.Generate(4, 500f, Vector3.forward, 360f, out var outVerts, out var outIndices);
+                    mesh = new Mesh
+                    {
+                        vertices = outVerts.ToArray(),
+                        triangles = outIndices.ToArray()
+                    };
+                }
+                sky = sky ?? new GameObject("RW_PlanetAtmosphere");
+                meshFilter = meshFilter ?? sky.AddComponent<MeshFilter>();
+                meshRenderer = meshRenderer ?? sky.AddComponent<MeshRenderer>();
+                light = light ?? sky.AddComponent<Light>();
+                transform = transform ?? sky.transform;
+                sky.layer = WorldCameraManager.WorldLayer;
+                meshFilter.mesh = mesh;
+                meshRenderer.material = ShaderLoader.materialLUT;
+                light.type = LightType.Directional;
+                transform.rotation = Quaternion.LookRotation(-GenCelestial.CurSunPositionInWorldSpace());
             }
             else
             {
