@@ -14,13 +14,10 @@ namespace RW_PlanetAtmosphere.Patch
     internal static class WorldLayer_Glow_Patcher
     {
         private static MethodInfo WorldLayer_ClearSubMeshes = typeof(WorldLayer).GetMethod("ClearSubMeshes",BindingFlags.Instance | BindingFlags.NonPublic);
+        private static MethodInfo WorldLayer_GetSubMesh = typeof(WorldLayer).GetMethod("GetSubMesh",BindingFlags.Instance | BindingFlags.NonPublic);
+        private static MethodInfo WorldLayer_FinalizeMesh = typeof(WorldLayer).GetMethod("FinalizeMesh",BindingFlags.Instance | BindingFlags.NonPublic);
 
         private static AccessTools.FieldRef<WorldLayer,bool> WorldLayer_dirty = AccessTools.FieldRefAccess<WorldLayer,bool>("dirty");
-
-        private static Mesh mesh = new Mesh();
-        private static GameObject sky = null;
-        private static MeshFilter skyMesh = null;
-        private static MeshRenderer skyRanderer = null;
 
 
         [HarmonyPrefix]
@@ -42,23 +39,52 @@ namespace RW_PlanetAtmosphere.Patch
         {
             WorldLayer_dirty(instance) = false;
             WorldLayer_ClearSubMeshes.Invoke(instance,new object[]{MeshParts.All});
-            SphereGenerator.Generate(4, 1000f, Vector3.forward, 360f, out var outVerts, out var outIndices);
-            mesh = mesh ?? new Mesh();
-            if (UnityData.isEditor)
-            {
-                mesh.name = "WorldLayerSubMesh_" + instance.GetType().Name + "_" + Find.World.info.seedString;
-            }
-            mesh.vertices = outVerts.ToArray();
-            mesh.triangles = outIndices.ToArray();
-            Log.Message(mesh.name);
-            sky = sky ?? new GameObject("RW_PlanetAtmosphere_Randerer");
-            skyMesh = skyMesh ?? sky.AddComponent<MeshFilter>();
-            skyRanderer = skyRanderer ?? sky.AddComponent<MeshRenderer>();
-            sky.layer = WorldCameraManager.WorldLayer;
-            skyMesh.mesh = mesh;
-            skyRanderer.material = ShaderLoader.materialLUT;
             yield break;
         }
 
+    }
+    public class WorldLayer_PlanetAtmosphere : WorldLayer
+    {
+        private GameObject sky = null;
+        private MeshFilter meshFilter = null;
+        private MeshRenderer meshRenderer = null;
+
+        public override void Render()
+        {
+            if(subMeshes.Count > 0)
+            {
+                LayerSubMesh subMesh = subMeshes[0];
+                if (subMesh.finalized)
+                {
+                    sky = sky ?? new GameObject("RW_PlanetAtmosphere");
+                    meshFilter = meshFilter ?? sky.AddComponent<MeshFilter>();
+                    meshRenderer = meshRenderer ?? sky.AddComponent<MeshRenderer>();
+                    sky.layer = WorldCameraManager.WorldLayer;
+                }
+                meshFilter.mesh = subMesh.mesh;
+                meshRenderer.material = subMesh.material;
+            }
+        }
+
+        public override IEnumerable Regenerate()
+        {
+            foreach (object item in base.Regenerate())
+            {
+                yield return item;
+            }
+            if(ShaderLoader.materialLUT != null && (ShaderLoader.materialLUT.shader?.isSupported ?? false))
+            {
+                SphereGenerator.Generate(4, 1000f, Vector3.forward, 360f, out var outVerts, out var outIndices);
+                LayerSubMesh subMesh = GetSubMesh(ShaderLoader.materialLUT);
+                subMesh.verts.AddRange(outVerts);
+                subMesh.tris.AddRange(outIndices);
+                FinalizeMesh(MeshParts.All);
+            }
+        }
+
+        ~WorldLayer_PlanetAtmosphere()
+        {
+            if(sky != null) GameObject.Destroy(sky);
+        }
     }
 }
