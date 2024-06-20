@@ -10,6 +10,7 @@ namespace RW_PlanetAtmosphere
     internal static class ShaderLoader
     {
         public static Material materialLUT = null;
+        public readonly static Mesh mesh = null;
 
         private static Vector2Int translucentLUTSize = new Vector2Int(16, 16);
         private static Vector4 scatterLUTSize = new Vector4( 8, 2, 2, 1);
@@ -20,8 +21,9 @@ namespace RW_PlanetAtmosphere
         private static Material materialScatterGenrater = null;
         private static RenderTexture translucentLUT = null;
         private static RenderTexture scatterLUT = null;
-
-
+        private static GameObject sky = null;
+        private static MeshFilter meshFilter = null;
+        private static MeshRenderer meshRenderer = null;
         static ShaderLoader()
         {
             uint loadedCount = 0;
@@ -144,6 +146,15 @@ namespace RW_PlanetAtmosphere
                 WorldMaterials.WorldOcean.color = new Color32(1,2,4,255);
                 WorldMaterials.UngeneratedPlanetParts.color = new Color32(1,2,4,255);
                 WorldMaterials.Rivers.color = new Color32(1,2,4,255);
+
+                mesh = new Mesh();
+                
+                sky = new GameObject("RW_PlanetAtmosphere");
+                meshFilter = sky.AddComponent<MeshFilter>();
+                meshRenderer = sky.AddComponent<MeshRenderer>();
+                sky.layer = WorldCameraManager.WorldLayer;
+                meshFilter.mesh = mesh;
+                meshRenderer.material = materialLUT;
             }
         }
     }

@@ -9,22 +9,18 @@ namespace RW_PlanetAtmosphere
     
     public class WorldLayer_PlanetAtmosphere : WorldLayer
     {
-        private Mesh mesh;
-        private GameObject sky = null;
-        private MeshFilter meshFilter = null;
-        private MeshRenderer meshRenderer = null;
 
-        protected override Quaternion Rotation
-        {
-            get
-            {
-                if(ShaderLoader.materialLUT != null && (ShaderLoader.materialLUT.shader?.isSupported ?? false))
-                {
-                    Shader.SetGlobalVector("_WorldSpaceLightPos0",GenCelestial.CurSunPositionInWorldSpace());
-                }
-                return base.Rotation;
-            }
-        }
+        // protected override Quaternion Rotation
+        // {
+        //     get
+        //     {
+        //         if(ShaderLoader.materialLUT != null && (ShaderLoader.materialLUT.shader?.isSupported ?? false))
+        //         {
+        //             Shader.SetGlobalVector("_WorldSpaceLightPos0",GenCelestial.CurSunPositionInWorldSpace());
+        //         }
+        //         return base.Rotation;
+        //     }
+        // }
 
         public override IEnumerable Regenerate()
         {
@@ -34,28 +30,30 @@ namespace RW_PlanetAtmosphere
             }
             if(ShaderLoader.materialLUT != null && (ShaderLoader.materialLUT.shader?.isSupported ?? false))
             {
-                if(mesh == null)
+                ShaderLoader.mesh.vertices = new Vector3[]
                 {
-                    SphereGenerator.Generate(4, 500f, Vector3.forward, 360f, out var outVerts, out var outIndices);
-                    mesh = new Mesh
-                    {
-                        vertices = outVerts.ToArray(),
-                        triangles = outIndices.ToArray()
-                    };
-                }
-                
-                sky = sky ?? new GameObject("RW_PlanetAtmosphere");
-                meshFilter = meshFilter ?? sky.AddComponent<MeshFilter>();
-                meshRenderer = meshRenderer ?? sky.AddComponent<MeshRenderer>();
-                sky.layer = WorldCameraManager.WorldLayer;
-                meshFilter.mesh = mesh;
-                meshRenderer.material = ShaderLoader.materialLUT;
+                    new Vector3(-500,-500,-500),
+                    new Vector3( 500,-500,-500),
+                    new Vector3(-500, 500,-500),
+                    new Vector3( 500, 500,-500),
+                    new Vector3(-500,-500, 500),
+                    new Vector3( 500,-500, 500),
+                    new Vector3(-500, 500, 500),
+                    new Vector3( 500, 500, 500)
+                };
+                ShaderLoader.mesh.triangles = new int[]
+                {
+                    0,2,1,3,1,2,
+                    5,7,4,6,4,7,
+                    4,6,0,2,0,6,
+                    1,3,5,7,5,3,
+                    2,6,3,7,3,6,
+                    4,0,5,1,5,0
+                };
+                ShaderLoader.mesh.RecalculateBounds();
+                ShaderLoader.mesh.RecalculateNormals();
+                ShaderLoader.mesh.RecalculateTangents();
             }
-        }
-
-        ~WorldLayer_PlanetAtmosphere()
-        {
-            if(sky != null) GameObject.Destroy(sky);
         }
     }
 }
