@@ -60,9 +60,9 @@ namespace RW_PlanetAtmosphere.Patch
                     meshFilter = meshFilter ?? sky.AddComponent<MeshFilter>();
                     meshRenderer = meshRenderer ?? sky.AddComponent<MeshRenderer>();
                     sky.layer = WorldCameraManager.WorldLayer;
+                    meshFilter.mesh = subMesh.mesh;
+                    meshRenderer.material = subMesh.material;
                 }
-                meshFilter.mesh = subMesh.mesh;
-                meshRenderer.material = subMesh.material;
             }
         }
 
