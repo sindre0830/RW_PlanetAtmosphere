@@ -79,6 +79,7 @@ namespace RW_PlanetAtmosphere
                 materialLUT.SetFloat("H_Mie", materialLUT.GetFloat("H_Mie") * scale);
                 materialLUT.SetFloat("H_OZone", materialLUT.GetFloat("H_OZone") * scale);
                 materialLUT.SetFloat("D_OZone", materialLUT.GetFloat("D_OZone") * scale);
+                materialLUT.renderQueue = 3600;
                 
                 translucentLUT = new RenderTexture(translucentLUTSize.x << 4, translucentLUTSize.y << 4, 0)
                 {

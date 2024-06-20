@@ -21,7 +21,7 @@ namespace RW_PlanetAtmosphere
             {
                 if(ShaderLoader.materialLUT != null && (ShaderLoader.materialLUT.shader?.isSupported ?? false))
                 {
-                    ShaderLoader.materialLUT.SetVector("_WorldSpaceLightPos0",GenCelestial.CurSunPositionInWorldSpace());
+                    Shader.SetGlobalVector("_WorldSpaceLightPos0",GenCelestial.CurSunPositionInWorldSpace());
                 }
                 return base.Rotation;
             }
