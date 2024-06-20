@@ -1,0 +1,19 @@
+ManifestFileVersion: 0
+CRC: 323230172
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: f5d67faa172a1d4314cb784aaed15b35
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 55d48f4ad9c3b13330b9eb5ee5686477
+HashAppended: 0
+ClassTypes:
+- Class: 48
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Data/RWNodeTree.RWPlanetAtmosphere/SkyBox_LUT.shader
+- Assets/Data/RWNodeTree.RWPlanetAtmosphere/TranslucentGenrater.shader
+- Assets/Data/RWNodeTree.RWPlanetAtmosphere/ScatterGenrater.shader
+Dependencies: []
