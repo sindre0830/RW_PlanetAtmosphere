@@ -252,7 +252,7 @@ float3 translucentFromLUT(float2 ah)
 {
     if(ah.y < minh - 0.0005) return float3(0.0,0.0,0.0);
     ah = AH2Map(ah);
-    ah = (ah * (0.5 * translucentLUT_TexelSize.zw - float2(1.0,1.0)) + float2(0.5,0.5)) * translucentLUT_TexelSize.xy;\
+    ah = (ah * (float2(0.5,1.0) * translucentLUT_TexelSize.zw - float2(1.0,1.0)) + float2(0.5,0.5)) * translucentLUT_TexelSize.xy;
     return tex2Dlod(translucentLUT,float4(ah.x,ah.y,0.0,0.0)).xyz;
 }
 
@@ -260,8 +260,8 @@ float3 translucentFromLUT_BlockByGround(float2 ah)
 {
     if(ah.y < minh - 0.0005) return float3(0.0,0.0,0.0);
     ah = AH2Map(ah);
-    ah = (ah * (0.5 * translucentLUT_TexelSize.zw - float2(1.0,1.0)) + float2(0.5,0.5)) * translucentLUT_TexelSize.xy;
-    return tex2Dlod(translucentLUT,float4(ah.x,ah.y,0.0,0.0)).xyz;
+    ah = (ah * (float2(0.5,1.0) * translucentLUT_TexelSize.zw - float2(1.0,1.0)) + float2(0.5,0.5)) * translucentLUT_TexelSize.xy;
+    return tex2Dlod(translucentLUT,float4(ah.x + 0.5,ah.y,0.0,0.0)).xyz;
 }
 
 float3 scatterFromLUT(float4 ahlw)
