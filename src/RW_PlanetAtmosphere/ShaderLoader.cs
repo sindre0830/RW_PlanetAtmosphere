@@ -155,6 +155,7 @@ namespace RW_PlanetAtmosphere
                 sky.layer = WorldCameraManager.WorldLayer;
                 meshFilter.mesh = mesh;
                 meshRenderer.material = materialLUT;
+                Object.DontDestroyOnLoad(sky);
             }
         }
     }
