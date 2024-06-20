@@ -41,7 +41,7 @@ namespace RW_PlanetAtmosphere
             }
             if(ShaderLoader.materialLUT != null && (ShaderLoader.materialLUT.shader?.isSupported ?? false))
             {
-                SphereGenerator.Generate(4, 1000f, Vector3.forward, 360f, out var outVerts, out var outIndices);
+                SphereGenerator.Generate(4, 500f, Vector3.forward, 360f, out var outVerts, out var outIndices);
                 LayerSubMesh subMesh = GetSubMesh(ShaderLoader.materialLUT);
                 subMesh.verts.AddRange(outVerts);
                 subMesh.tris.AddRange(outIndices);
