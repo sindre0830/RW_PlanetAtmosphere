@@ -22,6 +22,7 @@ namespace RW_PlanetAtmosphere
         private static GameObject sky = null;
         private static MeshFilter meshFilter = null;
         private static MeshRenderer meshRenderer = null;
+        private static PlanetAtmosphere planetAtmosphere = null;
 
         public static bool isEnable => materialLUT != null && (materialLUT.shader?.isSupported ?? false);
         static ShaderLoader()
@@ -77,9 +78,9 @@ namespace RW_PlanetAtmosphere
                 mesh = new Mesh();
                 
                 sky = new GameObject("RW_PlanetAtmosphere");
-                sky.AddComponent<PlanetAtmosphere>();
                 meshFilter = sky.AddComponent<MeshFilter>();
                 meshRenderer = sky.AddComponent<MeshRenderer>();
+                planetAtmosphere = sky.AddComponent<PlanetAtmosphere>();
                 Object.DontDestroyOnLoad(sky);
                 sky.layer = WorldCameraManager.WorldLayer;
                 meshFilter.mesh = mesh;
@@ -87,9 +88,12 @@ namespace RW_PlanetAtmosphere
                 WorldCameraManager.WorldCamera.fieldOfView = 20;
                 WorldCameraManager.WorldSkyboxCamera.fieldOfView = 20;
 
-                Log.Message(WorldMaterials.WorldOcean.shader.ToString());
-                Log.Message(WorldMaterials.UngeneratedPlanetParts.shader.ToString());
-                Log.Message(WorldMaterials.Rivers.shader.ToString());
+
+                planetAtmosphere.materialsTest.Add(WorldMaterials.WorldOcean);
+                planetAtmosphere.materialsTest.Add(WorldMaterials.UngeneratedPlanetParts);
+                planetAtmosphere.materialsTest.Add(WorldMaterials.Rivers);
+                planetAtmosphere.materialsTest.Add(WorldMaterials.Stars);
+
                 // WorldMaterials.WorldOcean.color = new Color32(1,2,4,255);
                 // WorldMaterials.UngeneratedPlanetParts.color = new Color32(1,2,4,255);
                 // WorldMaterials.Rivers.color = new Color32(1,2,4,255);
@@ -99,6 +103,7 @@ namespace RW_PlanetAtmosphere
 
         private class PlanetAtmosphere : MonoBehaviour
         {
+            public readonly List<Material> materialsTest = new List<Material>();
             void parmUpdated()
             {
                 if(!AtmosphereSettings.updated && isEnable)
