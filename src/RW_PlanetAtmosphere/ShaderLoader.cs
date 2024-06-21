@@ -90,9 +90,11 @@ namespace RW_PlanetAtmosphere
 
                 WorldMaterials.Rivers.shader = ShaderDatabase.Transparent;
                 WorldMaterials.RiversBorder.shader = ShaderDatabase.Transparent;
+                WorldMaterials.UngeneratedPlanetParts.shader = WorldMaterials.WorldOcean.shader;
 
                 WorldMaterials.Rivers.renderQueue = 3530;
                 WorldMaterials.RiversBorder.renderQueue = 3520;
+                WorldMaterials.UngeneratedPlanetParts.renderQueue = 3500;
 
                 WorldMaterials.Rivers.color = new Color(-65536,-65536,-65536,1);
                 WorldMaterials.RiversBorder.color = new Color(0,0,0,0);
