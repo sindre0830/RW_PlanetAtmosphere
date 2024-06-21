@@ -80,8 +80,8 @@ namespace RW_PlanetAtmosphere
         {
             Widgets.DrawLineHorizontal(0,31,inRect.width);
             Vector2 ScrollViewSize = new Vector2(inRect.width,512);
-            if(ScrollViewSize.y > inRect.height-32) ScrollViewSize.x -= 36;
-            Widgets.BeginScrollView(new Rect(0,32,inRect.width,inRect.height-32),ref scrollPos,new Rect(Vector2.zero, ScrollViewSize));
+            if(ScrollViewSize.y > inRect.height-64) ScrollViewSize.x -= 36;
+            Widgets.BeginScrollView(new Rect(0,32,inRect.width,inRect.height-64),ref scrollPos,new Rect(Vector2.zero, ScrollViewSize));
 
             float newValue;
 
@@ -183,12 +183,16 @@ namespace RW_PlanetAtmosphere
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*7f/4f,448,ScrollViewSize.x*0.5f/4f,32),scatterLUTSize.w.ToString("f5")),out newValue);
             scatterLUTSize.w = (int)newValue;
 
-            if(Widgets.ButtonText(new Rect(0,480,ScrollViewSize.x*0.5f,32), "apply".Translate()))
+
+            Widgets.DrawLineVertical(ScrollViewSize.x*0.5f,0,ScrollViewSize.y);
+            Widgets.EndScrollView();
+
+            if(Widgets.ButtonText(new Rect(0,inRect.height-64,inRect.width*0.5f,32), "apply".Translate()))
             {
                 updated = false;
             }
 
-            if(Widgets.ButtonText(new Rect(ScrollViewSize.x*0.5f,480,ScrollViewSize.x*0.5f,32), "reset".Translate()))
+            if(Widgets.ButtonText(new Rect(inRect.width*0.5f,inRect.height-64,inRect.width*0.5f,32), "reset".Translate()))
             {
                 exposure = 4;
                 ground_refract = 1;
@@ -207,10 +211,6 @@ namespace RW_PlanetAtmosphere
                 scatterLUTSize = new Vector4( 8, 2, 2, 1);
                 updated = false;
             }
-
-
-            Widgets.DrawLineVertical(ScrollViewSize.x*0.5f,0,ScrollViewSize.y);
-            Widgets.EndScrollView();
 
             ShaderLoader.materialLUT.SetFloat("exposure", exposure);
             ShaderLoader.materialLUT.SetFloat("ground_refract", ground_refract);
