@@ -84,7 +84,15 @@ namespace RW_PlanetAtmosphere
                 sky.layer = WorldCameraManager.WorldLayer;
                 meshFilter.mesh = mesh;
                 meshRenderer.material = materialLUT;
-                WorldCameraManager.WorldCamera.fieldOfView = 60;
+                WorldCameraManager.WorldCamera.fieldOfView = 40;
+                WorldCameraManager.WorldSkyboxCamera.fieldOfView = 40;
+
+                Log.Message(WorldMaterials.WorldOcean.shader.ToString());
+                Log.Message(WorldMaterials.UngeneratedPlanetParts.shader.ToString());
+                Log.Message(WorldMaterials.Rivers.shader.ToString());
+                // WorldMaterials.WorldOcean.color = new Color32(1,2,4,255);
+                // WorldMaterials.UngeneratedPlanetParts.color = new Color32(1,2,4,255);
+                // WorldMaterials.Rivers.color = new Color32(1,2,4,255);
             }
         }
 
@@ -185,11 +193,6 @@ namespace RW_PlanetAtmosphere
                     materialLUT.SetTexture("translucentLUT", translucentLUT);
                     materialLUT.SetTexture("scatterLUT", scatterLUT);
                     materialLUT.SetVector("scatterLUT_Size", new Vector4((int)scatterLUTSize.x, (int)scatterLUTSize.y , (int)scatterLUTSize.z, (int)scatterLUTSize.w));
-
-
-                    WorldMaterials.WorldOcean.color = new Color32(1,2,4,255);
-                    WorldMaterials.UngeneratedPlanetParts.color = new Color32(1,2,4,255);
-                    WorldMaterials.Rivers.color = new Color32(1,2,4,255);
                     AtmosphereSettings.updated = true;
                 }
             }

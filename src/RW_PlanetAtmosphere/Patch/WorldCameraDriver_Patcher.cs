@@ -23,7 +23,7 @@ namespace RW_PlanetAtmosphere.Patch
         {
             if(ShaderLoader.isEnable)
             {
-                __result = 100f + (SteamDeck.IsSteamDeck ? 5f : 8f);
+                __result = 100f + (SteamDeck.IsSteamDeck ? 8f : 16f);
             }
         }
 

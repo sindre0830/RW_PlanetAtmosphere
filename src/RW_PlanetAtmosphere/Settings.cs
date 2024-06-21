@@ -212,5 +212,10 @@ namespace RW_PlanetAtmosphere
         {
             AtmosphereSettings.DoWindowContents(inRect);
         }
+
+        public override string SettingsCategory()
+        {
+            return "Atmosphere".Translate();
+        }
     }
 }
