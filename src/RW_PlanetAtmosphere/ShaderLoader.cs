@@ -11,15 +11,14 @@ namespace RW_PlanetAtmosphere
     [StaticConstructorOnStartup]
     internal static class ShaderLoader
     {
+        public static RenderTexture translucentLUT = null;
+        public static RenderTexture scatterLUT = null;
         public readonly static Material materialLUT = null;
-        public readonly static Mesh mesh = null;
-        private static Shader SkyBox_LUT = null;
+        public readonly static Mesh mesh = null;        private static Shader SkyBox_LUT = null;
         private static Shader TranslucentGenrater = null;
         private static Shader ScatterGenrater = null;
         private static Material materialTranslucentGenrater = null;
         private static Material materialScatterGenrater = null;
-        private static RenderTexture translucentLUT = null;
-        private static RenderTexture scatterLUT = null;
         private static GameObject sky = null;
         private static MeshFilter meshFilter = null;
         private static MeshRenderer meshRenderer = null;
@@ -94,47 +93,56 @@ namespace RW_PlanetAtmosphere
         {
             void parmUpdated()
             {
-                if(!Settings.updated && isEnable)
+                if(!AtmosphereSettings.updated && isEnable)
                 {
-                    materialLUT.SetFloat("mie_amount", Settings.mie_amount);
-                    materialLUT.SetFloat("mie_absorb", Settings.mie_absorb);
-                    materialLUT.SetFloat("H_Reayleigh", Settings.H_Reayleigh);
-                    materialLUT.SetFloat("H_Mie", Settings.H_Mie);
-                    materialLUT.SetFloat("H_OZone", Settings.H_OZone);
-                    materialLUT.SetFloat("D_OZone", Settings.D_OZone);
+                    materialLUT.SetFloat("mie_amount", AtmosphereSettings.mie_amount);
+                    materialLUT.SetFloat("mie_absorb", AtmosphereSettings.mie_absorb);
+                    materialLUT.SetFloat("H_Reayleigh", AtmosphereSettings.H_Reayleigh);
+                    materialLUT.SetFloat("H_Mie", AtmosphereSettings.H_Mie);
+                    materialLUT.SetFloat("H_OZone", AtmosphereSettings.H_OZone);
+                    materialLUT.SetFloat("D_OZone", AtmosphereSettings.D_OZone);
                     materialLUT.SetFloat("minh", 99.85f);
                     materialLUT.SetFloat("maxh", 99.85f + Mathf.Max
                     (
-                        Settings.H_OZone + Settings.D_OZone,
+                        AtmosphereSettings.H_OZone + AtmosphereSettings.D_OZone,
                         -Mathf.Log(0.00001f)*(Mathf.Max
                         (
-                            Settings.reayleighScatterFactor.x,
-                            Settings.reayleighScatterFactor.y,
-                            Settings.reayleighScatterFactor.z
-                        ) * Settings.H_Reayleigh),
-                        -Mathf.Log(0.00001f)*(Settings.mie_amount * (Settings.mie_absorb + 1.0f) * Settings.H_Mie)
+                            AtmosphereSettings.reayleighScatterFactor.x,
+                            AtmosphereSettings.reayleighScatterFactor.y,
+                            AtmosphereSettings.reayleighScatterFactor.z
+                        ) * AtmosphereSettings.H_Reayleigh),
+                        -Mathf.Log(0.00001f)*(AtmosphereSettings.mie_amount * (AtmosphereSettings.mie_absorb + 1.0f) * AtmosphereSettings.H_Mie)
                     ));
-                    materialLUT.SetVector("reayleighScatterFactor", Settings.reayleighScatterFactor);
-                    materialLUT.SetVector("OZoneAbsorbFactor", Settings.OZoneAbsorbFactor);
-                    Vector2Int translucentLUTSize = Vector2Int.FloorToInt(Settings.translucentLUTSize);
-                    Vector4 scatterLUTSize = Settings.scatterLUTSize;
+                    materialLUT.SetVector("reayleighScatterFactor", AtmosphereSettings.reayleighScatterFactor);
+                    materialLUT.SetVector("OZoneAbsorbFactor", AtmosphereSettings.OZoneAbsorbFactor);
+                    Vector4 scatterLUTSize = AtmosphereSettings.scatterLUTSize * 16;
+                    Vector2Int translucentLUTSize = Vector2Int.FloorToInt(AtmosphereSettings.translucentLUTSize) * 16;
+                    Vector2Int scatterLUTSize2D = new Vector2Int((int)scatterLUTSize.x * (int)scatterLUTSize.z, (int)scatterLUTSize.y * (int)scatterLUTSize.w);
                     
-                    translucentLUT = new RenderTexture(translucentLUTSize.x << 4, translucentLUTSize.y << 4, 0)
+                    if(translucentLUT == null || translucentLUT.width != translucentLUTSize.x || translucentLUT.height != translucentLUTSize.y)
                     {
-                        enableRandomWrite = true,
-                        useMipMap = false,
-                        format = RenderTextureFormat.ARGBHalf,
-                        wrapMode = TextureWrapMode.Clamp
-                    };
-                    translucentLUT.Create();
-                    scatterLUT = new RenderTexture(((int)scatterLUTSize.x * (int)scatterLUTSize.z) << 8, ((int)scatterLUTSize.y * (int)scatterLUTSize.w) << 8, 0)
+                        if (translucentLUT != null) Destroy(translucentLUT);
+                        translucentLUT = new RenderTexture(translucentLUTSize.x, translucentLUTSize.y, 0)
+                        {
+                            enableRandomWrite = true,
+                            useMipMap = false,
+                            format = RenderTextureFormat.ARGBHalf,
+                            wrapMode = TextureWrapMode.Clamp
+                        };
+                        translucentLUT.Create();
+                    }
+                    if(scatterLUT == null || scatterLUT.width != scatterLUTSize2D.x || scatterLUT.height != scatterLUTSize2D.y)
                     {
-                        enableRandomWrite = true,
-                        useMipMap = false,
-                        format = RenderTextureFormat.ARGBHalf,
-                        wrapMode = TextureWrapMode.Clamp
-                    };
-                    scatterLUT.Create();
+                        if (scatterLUT != null) Destroy(scatterLUT);
+                        scatterLUT = new RenderTexture(scatterLUTSize2D.x, scatterLUTSize2D.y, 0)
+                        {
+                            enableRandomWrite = true,
+                            useMipMap = false,
+                            format = RenderTextureFormat.ARGBHalf,
+                            wrapMode = TextureWrapMode.Clamp
+                        };
+                        scatterLUT.Create();
+                    }
 
                     materialTranslucentGenrater = new Material(TranslucentGenrater);
                     materialScatterGenrater = new Material(ScatterGenrater);
@@ -155,7 +163,7 @@ namespace RW_PlanetAtmosphere
 
                     materialScatterGenrater.SetTexture("scatterLUT", scatterLUT);
                     materialScatterGenrater.SetTexture("translucentLUT", translucentLUT);
-                    materialScatterGenrater.SetVector("scatterLUT_Size", new Vector4((int)scatterLUTSize.x << 4, (int)scatterLUTSize.y << 4, (int)scatterLUTSize.z << 4, (int)scatterLUTSize.w << 4));
+                    materialScatterGenrater.SetVector("scatterLUT_Size", new Vector4((int)scatterLUTSize.x, (int)scatterLUTSize.y , (int)scatterLUTSize.z, (int)scatterLUTSize.w));
                     materialScatterGenrater.SetVector("reayleighScatterFactor", materialLUT.GetVector("reayleighScatterFactor"));
                     materialScatterGenrater.SetVector("OZoneAbsorbFactor", materialLUT.GetVector("OZoneAbsorbFactor"));
                     materialScatterGenrater.SetFloat("mie_amount", materialLUT.GetFloat("mie_amount"));
@@ -176,13 +184,13 @@ namespace RW_PlanetAtmosphere
                     //materialLUT.SetFloat("minh", 63.71393f);
                     materialLUT.SetTexture("translucentLUT", translucentLUT);
                     materialLUT.SetTexture("scatterLUT", scatterLUT);
-                    materialLUT.SetVector("scatterLUT_Size", new Vector4((int)scatterLUTSize.x << 4, (int)scatterLUTSize.y << 4, (int)scatterLUTSize.z << 4, (int)scatterLUTSize.w << 4));
+                    materialLUT.SetVector("scatterLUT_Size", new Vector4((int)scatterLUTSize.x, (int)scatterLUTSize.y , (int)scatterLUTSize.z, (int)scatterLUTSize.w));
 
 
                     WorldMaterials.WorldOcean.color = new Color32(1,2,4,255);
                     WorldMaterials.UngeneratedPlanetParts.color = new Color32(1,2,4,255);
                     WorldMaterials.Rivers.color = new Color32(1,2,4,255);
-                    Settings.updated = true;
+                    AtmosphereSettings.updated = true;
                 }
             }
             void Update()
@@ -190,11 +198,11 @@ namespace RW_PlanetAtmosphere
                 if(isEnable && Find.World != null)
                 {
                     parmUpdated();
-                    materialLUT.SetFloat("exposure", Settings.exposure);
-                    materialLUT.SetFloat("ground_refract", Settings.ground_refract);
-                    materialLUT.SetFloat("ground_light", Settings.ground_light);
-                    materialLUT.SetVector("SunColor", Settings.SunColor);
-                    materialLUT.SetVector("mie_eccentricity", Settings.mie_eccentricity);
+                    materialLUT.SetFloat("exposure", AtmosphereSettings.exposure);
+                    materialLUT.SetFloat("ground_refract", AtmosphereSettings.ground_refract);
+                    materialLUT.SetFloat("ground_light", AtmosphereSettings.ground_light);
+                    materialLUT.SetVector("SunColor", AtmosphereSettings.SunColor);
+                    materialLUT.SetVector("mie_eccentricity", AtmosphereSettings.mie_eccentricity);
                     Shader.SetGlobalVector("_WorldSpaceLightPos0",GenCelestial.CurSunPositionInWorldSpace());
                 }
             }
