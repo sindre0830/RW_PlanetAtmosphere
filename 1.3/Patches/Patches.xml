@@ -7,7 +7,6 @@
 		<value>
 			<texture>TerrainReplace/Water</texture>
 		</value>
-		<order>Append</order>
 	</Operation>
 
 </Patch>
