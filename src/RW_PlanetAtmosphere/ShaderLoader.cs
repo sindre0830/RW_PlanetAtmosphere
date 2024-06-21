@@ -89,18 +89,20 @@ namespace RW_PlanetAtmosphere
                 WorldCameraManager.WorldSkyboxCamera.fieldOfView = 20;
 
                 WorldMaterials.Rivers.shader = ShaderDatabase.Transparent;
+                WorldMaterials.WorldOcean.shader = WorldMaterials.WorldTerrain.shader;
                 WorldMaterials.RiversBorder.shader = ShaderDatabase.Transparent;
-                WorldMaterials.UngeneratedPlanetParts.shader = WorldMaterials.WorldOcean.shader;
+                WorldMaterials.UngeneratedPlanetParts.shader = WorldMaterials.WorldTerrain.shader;
 
                 WorldMaterials.Rivers.renderQueue = 3530;
+                WorldMaterials.WorldOcean.renderQueue = 3500;
                 WorldMaterials.RiversBorder.renderQueue = 3520;
                 WorldMaterials.UngeneratedPlanetParts.renderQueue = 3500;
 
                 WorldMaterials.Rivers.color = new Color(-65536,-65536,-65536,1);
                 WorldMaterials.RiversBorder.color = new Color(0,0,0,0);
 
-                WorldMaterials.WorldOcean.mainTexture = SolidColorMaterials.NewSolidColorTexture(Color.black);
-                WorldMaterials.UngeneratedPlanetParts.mainTexture = WorldMaterials.WorldOcean.mainTexture;
+                WorldMaterials.WorldOcean.mainTexture = ContentFinder<Texture2D>.Get("TerrainReplace/Water");
+                WorldMaterials.UngeneratedPlanetParts.mainTexture = ContentFinder<Texture2D>.Get("TerrainReplace/Water");
 
                 planetAtmosphere.materialsTest.Add(WorldMaterials.WorldOcean);
                 planetAtmosphere.materialsTest.Add(WorldMaterials.UngeneratedPlanetParts);
