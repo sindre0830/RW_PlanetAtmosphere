@@ -107,13 +107,13 @@ namespace RW_PlanetAtmosphere
                 // WorldMaterials.RiversBorder.mainTexture = ContentFinder<Texture2D>.Get("TerrainReplace/Water");
                 WorldMaterials.UngeneratedPlanetParts.mainTexture = ContentFinder<Texture2D>.Get("TerrainReplace/Water");
 
-                planetAtmosphere.materialsTest.Add(WorldMaterials.WorldOcean);
-                planetAtmosphere.materialsTest.Add(WorldMaterials.UngeneratedPlanetParts);
-                planetAtmosphere.materialsTest.Add(WorldMaterials.Stars);
-                planetAtmosphere.materialsTest.Add(WorldMaterials.Rivers);
-                planetAtmosphere.materialsTest.Add(WorldMaterials.RiversBorder);
-                planetAtmosphere.materialsTest.Add(WorldMaterials.WorldTerrain);
-                planetAtmosphere.materialsTest.Add(WorldMaterials.WorldIce);
+                // planetAtmosphere.materialsTest.Add(WorldMaterials.WorldOcean);
+                // planetAtmosphere.materialsTest.Add(WorldMaterials.UngeneratedPlanetParts);
+                // planetAtmosphere.materialsTest.Add(WorldMaterials.Stars);
+                // planetAtmosphere.materialsTest.Add(WorldMaterials.Rivers);
+                // planetAtmosphere.materialsTest.Add(WorldMaterials.RiversBorder);
+                // planetAtmosphere.materialsTest.Add(WorldMaterials.WorldTerrain);
+                // planetAtmosphere.materialsTest.Add(WorldMaterials.WorldIce);
 
                 // WorldMaterials.WorldOcean.color = new Color32(1,2,4,255);
                 // WorldMaterials.UngeneratedPlanetParts.color = new Color32(1,2,4,255);
@@ -124,7 +124,7 @@ namespace RW_PlanetAtmosphere
 
         private class PlanetAtmosphere : MonoBehaviour
         {
-            public readonly List<Material> materialsTest = new List<Material>();
+            // public readonly List<Material> materialsTest = new List<Material>();
             void parmUpdated()
             {
                 if(!AtmosphereSettings.updated && isEnable)
