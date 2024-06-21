@@ -4,7 +4,9 @@
 	<Operation Class="PatchOperationReplace">
 		<success>Always</success>
 		<xpath>*/BiomeDef[defName="Ocean" or defName="Lake"]/texture</xpath>
-		<value>TerrainReplace/Water</value>
+		<value>
+			<texture>TerrainReplace/Water</texture>
+		</value>
 		<order>Append</order>
 	</Operation>
 
