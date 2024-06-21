@@ -88,9 +88,9 @@ namespace RW_PlanetAtmosphere
                 WorldCameraManager.WorldCamera.fieldOfView = 20;
                 WorldCameraManager.WorldSkyboxCamera.fieldOfView = 20;
 
-                WorldMaterials.Rivers.shader = ShaderDatabase.Transparent;
+                WorldMaterials.Rivers.shader = WorldMaterials.WorldTerrain.shader;
                 WorldMaterials.WorldOcean.shader = WorldMaterials.WorldTerrain.shader;
-                WorldMaterials.RiversBorder.shader = ShaderDatabase.Transparent;
+                WorldMaterials.RiversBorder.shader = WorldMaterials.WorldTerrain.shader;
                 WorldMaterials.UngeneratedPlanetParts.shader = WorldMaterials.WorldTerrain.shader;
 
                 WorldMaterials.Rivers.renderQueue = 3530;
@@ -98,10 +98,13 @@ namespace RW_PlanetAtmosphere
                 WorldMaterials.RiversBorder.renderQueue = 3520;
                 WorldMaterials.UngeneratedPlanetParts.renderQueue = 3500;
 
-                WorldMaterials.Rivers.color = new Color(-65536,-65536,-65536,1);
-                WorldMaterials.RiversBorder.color = new Color(0,0,0,0);
+                // WorldMaterials.Rivers.color = new Color(-65536,-65536,-65536,1);
+                // WorldMaterials.RiversBorder.color = new Color(0,0,0,0);
 
+
+                WorldMaterials.Rivers.mainTexture = ContentFinder<Texture2D>.Get("TerrainReplace/Water");
                 WorldMaterials.WorldOcean.mainTexture = ContentFinder<Texture2D>.Get("TerrainReplace/Water");
+                WorldMaterials.RiversBorder.mainTexture = ContentFinder<Texture2D>.Get("TerrainReplace/Water");
                 WorldMaterials.UngeneratedPlanetParts.mainTexture = ContentFinder<Texture2D>.Get("TerrainReplace/Water");
 
                 planetAtmosphere.materialsTest.Add(WorldMaterials.WorldOcean);
