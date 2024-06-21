@@ -11,21 +11,21 @@ using Verse.Steam;
 
 namespace RW_PlanetAtmosphere.Patch
 {
-    [HarmonyPatch(typeof(WorldCameraDriver))]
-    internal static class WorldCameraDriver_Patcher
-    {
-        [HarmonyPostfix]
-        [HarmonyPatch(
-            typeof(WorldCameraDriver),
-            "get_MinAltitude"
-            )]
-        private static void PostWorldCameraDriver_get_MinAltitude(ref float __result)
-        {
-            if(ShaderLoader.isEnable)
-            {
-                __result = 100f + (SteamDeck.IsSteamDeck ? 8f : 16f);
-            }
-        }
+    // [HarmonyPatch(typeof(WorldCameraDriver))]
+    // internal static class WorldCameraDriver_Patcher
+    // {
+    //     [HarmonyPostfix]
+    //     [HarmonyPatch(
+    //         typeof(WorldCameraDriver),
+    //         "get_MinAltitude"
+    //         )]
+    //     private static void PostWorldCameraDriver_get_MinAltitude(ref float __result)
+    //     {
+    //         if(ShaderLoader.isEnable)
+    //         {
+    //             __result = 100f + (SteamDeck.IsSteamDeck ? 8f : 16f);
+    //         }
+    //     }
 
-    }
+    // }
 }

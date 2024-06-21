@@ -84,8 +84,8 @@ namespace RW_PlanetAtmosphere
                 sky.layer = WorldCameraManager.WorldLayer;
                 meshFilter.mesh = mesh;
                 meshRenderer.material = materialLUT;
-                WorldCameraManager.WorldCamera.fieldOfView = 40;
-                WorldCameraManager.WorldSkyboxCamera.fieldOfView = 40;
+                WorldCameraManager.WorldCamera.fieldOfView = 20;
+                WorldCameraManager.WorldSkyboxCamera.fieldOfView = 20;
 
                 Log.Message(WorldMaterials.WorldOcean.shader.ToString());
                 Log.Message(WorldMaterials.UngeneratedPlanetParts.shader.ToString());
