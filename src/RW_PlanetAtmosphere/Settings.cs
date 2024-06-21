@@ -87,128 +87,106 @@ namespace RW_PlanetAtmosphere
 
             Widgets.Label(new Rect(0,0,ScrollViewSize.x*0.5f,32),"exposure".Translate());
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f,0,ScrollViewSize.x*0.5f,32),exposure.ToString("f5")),out newValue);
-            if(newValue != exposure) updated = false;
             exposure = newValue;
 
 
             Widgets.Label(new Rect(0,32,ScrollViewSize.x*0.5f,32),"ground_refract".Translate());
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f,32,ScrollViewSize.x*0.5f,32),ground_refract.ToString("f5")),out newValue);
-            if(newValue != ground_refract) updated = false;
             ground_refract = newValue;
 
 
             Widgets.Label(new Rect(0,64,ScrollViewSize.x*0.5f,32),"ground_light".Translate());
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f,64,ScrollViewSize.x*0.5f,32),ground_light.ToString("f5")),out newValue);
-            if(newValue != ground_light) updated = false;
             ground_light = newValue;
 
 
             Widgets.Label(new Rect(0,96,ScrollViewSize.x*0.5f,32),"mie_amount".Translate());
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f,96,ScrollViewSize.x*0.5f,32),mie_amount.ToString("f5")),out newValue);
-            if(newValue != mie_amount) updated = false;
             mie_amount = newValue;
 
 
             Widgets.Label(new Rect(0,128,ScrollViewSize.x*0.5f,32),"mie_absorb".Translate());
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f,128,ScrollViewSize.x*0.5f,32),mie_absorb.ToString("f5")),out newValue);
-            if(newValue != mie_absorb) updated = false;
             mie_absorb = newValue;
 
 
             Widgets.Label(new Rect(0,160,ScrollViewSize.x*0.5f,32),"H_Reayleigh".Translate());
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f,160,ScrollViewSize.x*0.5f,32),H_Reayleigh.ToString("f5")),out newValue);
-            if(newValue != H_Reayleigh) updated = false;
             H_Reayleigh = newValue;
 
 
             Widgets.Label(new Rect(0,192,ScrollViewSize.x*0.5f,32),"H_Mie".Translate());
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f,192,ScrollViewSize.x*0.5f,32),H_Mie.ToString("f5")),out newValue);
-            if(newValue != H_Mie) updated = false;
             H_Mie = newValue;
 
 
             Widgets.Label(new Rect(0,224,ScrollViewSize.x*0.5f,32),"H_OZone".Translate());
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f,224,ScrollViewSize.x*0.5f,32),H_OZone.ToString("f5")),out newValue);
-            if(newValue != H_OZone) updated = false;
             H_OZone = newValue;
 
 
             Widgets.Label(new Rect(0,256,ScrollViewSize.x*0.5f,32),"D_OZone".Translate());
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f,256,ScrollViewSize.x*0.5f,32),D_OZone.ToString("f5")),out newValue);
-            if(newValue != D_OZone) updated = false;
             D_OZone = newValue;
 
 
             Widgets.Label(new Rect(0,288,ScrollViewSize.x*0.5f,32),"translucentLUTSize".Translate());
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f,288,ScrollViewSize.x*0.5f/2f,32),translucentLUTSize.x.ToString("f5")),out newValue);
-            if((int)newValue != translucentLUTSize.x) updated = false;
             translucentLUTSize.x = (int)newValue;
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*3f/2f,288,ScrollViewSize.x*0.5f/2f,32),translucentLUTSize.y.ToString("f5")),out newValue);
-            if((int)newValue != translucentLUTSize.y) updated = false;
             translucentLUTSize.y = (int)newValue;
 
 
             Widgets.Label(new Rect(0,320,ScrollViewSize.x*0.5f,32),"SunColor".Translate());
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f,320,ScrollViewSize.x*0.5f/3f,32),SunColor.x.ToString("f5")),out newValue);
-            if(newValue != SunColor.x) updated = false;
             SunColor.x = newValue;
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*4f/3f,320,ScrollViewSize.x*0.5f/3f,32),SunColor.y.ToString("f5")),out newValue);
-            if(newValue != SunColor.y) updated = false;
             SunColor.y = newValue;
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*5f/3f,320,ScrollViewSize.x*0.5f/3f,32),SunColor.z.ToString("f5")),out newValue);
-            if(newValue != SunColor.z) updated = false;
             SunColor.z = newValue;
 
 
             Widgets.Label(new Rect(0,352,ScrollViewSize.x*0.5f,32),"mie_eccentricity".Translate());
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f,352,ScrollViewSize.x*0.5f/3f,32),mie_eccentricity.x.ToString("f5")),out newValue);
-            if(newValue != mie_eccentricity.x) updated = false;
             mie_eccentricity.x = newValue;
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*4f/3f,352,ScrollViewSize.x*0.5f/3f,32),mie_eccentricity.y.ToString("f5")),out newValue);
-            if(newValue != mie_eccentricity.y) updated = false;
             mie_eccentricity.y = newValue;
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*5f/3f,352,ScrollViewSize.x*0.5f/3f,32),mie_eccentricity.z.ToString("f5")),out newValue);
-            if(newValue != mie_eccentricity.z) updated = false;
             mie_eccentricity.z = newValue;
 
 
             Widgets.Label(new Rect(0,384,ScrollViewSize.x*0.5f,32),"reayleighScatterFactor".Translate());
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f,384,ScrollViewSize.x*0.5f/3f,32),reayleighScatterFactor.x.ToString("f5")),out newValue);
-            if(newValue != reayleighScatterFactor.x) updated = false;
             reayleighScatterFactor.x = newValue;
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*4f/3f,384,ScrollViewSize.x*0.5f/3f,32),reayleighScatterFactor.y.ToString("f5")),out newValue);
-            if(newValue != reayleighScatterFactor.y) updated = false;
             reayleighScatterFactor.y = newValue;
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*5f/3f,384,ScrollViewSize.x*0.5f/3f,32),reayleighScatterFactor.z.ToString("f5")),out newValue);
-            if(newValue != reayleighScatterFactor.z) updated = false;
             reayleighScatterFactor.z = newValue;
 
 
             Widgets.Label(new Rect(0,416,ScrollViewSize.x*0.5f,32),"OZoneAbsorbFactor".Translate());
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f,416,ScrollViewSize.x*0.5f/3f,32),OZoneAbsorbFactor.x.ToString("f5")),out newValue);
-            if(newValue != OZoneAbsorbFactor.x) updated = false;
             OZoneAbsorbFactor.x = newValue;
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*4f/3f,416,ScrollViewSize.x*0.5f/3f,32),OZoneAbsorbFactor.y.ToString("f5")),out newValue);
-            if(newValue != OZoneAbsorbFactor.y) updated = false;
             OZoneAbsorbFactor.y = newValue;
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*5f/3f,416,ScrollViewSize.x*0.5f/3f,32),OZoneAbsorbFactor.z.ToString("f5")),out newValue);
-            if(newValue != OZoneAbsorbFactor.z) updated = false;
             OZoneAbsorbFactor.z = newValue;
 
 
             Widgets.Label(new Rect(0,448,ScrollViewSize.x*0.5f,32),"scatterLUTSize".Translate());
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f,448,ScrollViewSize.x*0.5f/4f,32),scatterLUTSize.x.ToString("f5")),out newValue);
-            if((int)newValue != scatterLUTSize.x) updated = false;
             scatterLUTSize.x = (int)newValue;
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*5f/4f,448,ScrollViewSize.x*0.5f/4f,32),scatterLUTSize.y.ToString("f5")),out newValue);
-            if((int)newValue != scatterLUTSize.y) updated = false;
             scatterLUTSize.y = (int)newValue;
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*6f/4f,448,ScrollViewSize.x*0.5f/4f,32),scatterLUTSize.z.ToString("f5")),out newValue);
-            if((int)newValue != scatterLUTSize.x) updated = false;
             scatterLUTSize.z = (int)newValue;
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*7f/4f,448,ScrollViewSize.x*0.5f/4f,32),scatterLUTSize.w.ToString("f5")),out newValue);
-            if((int)newValue != scatterLUTSize.y) updated = false;
             scatterLUTSize.w = (int)newValue;
+
+            if(Widgets.ButtonText(new Rect(0,480,ScrollViewSize.x*0.5f,32), "apply".Translate()))
+            {
+                updated = false;
+            }
 
             if(Widgets.ButtonText(new Rect(ScrollViewSize.x*0.5f,480,ScrollViewSize.x*0.5f,32), "reset".Translate()))
             {
