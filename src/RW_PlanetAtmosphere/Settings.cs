@@ -180,7 +180,7 @@ namespace RW_PlanetAtmosphere
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*5f/4f,448,ScrollViewSize.x*0.5f/4f,32),scatterLUTSize.y.ToString()),out newValue);
             if((int)newValue != scatterLUTSize.y) updated = false;
             scatterLUTSize.y = (int)newValue;
-            float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*5f/4f,448,ScrollViewSize.x*0.5f/4f,32),scatterLUTSize.z.ToString()),out newValue);
+            float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*6f/4f,448,ScrollViewSize.x*0.5f/4f,32),scatterLUTSize.z.ToString()),out newValue);
             if((int)newValue != scatterLUTSize.x) updated = false;
             scatterLUTSize.z = (int)newValue;
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*7f/4f,448,ScrollViewSize.x*0.5f/4f,32),scatterLUTSize.w.ToString()),out newValue);
