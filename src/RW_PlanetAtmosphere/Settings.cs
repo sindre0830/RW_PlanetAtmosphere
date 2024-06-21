@@ -35,21 +35,45 @@ namespace RW_PlanetAtmosphere
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look(ref exposure, "exposure", defaultValue: 4, forceSave: true);
-            Scribe_Values.Look(ref ground_refract, "ground_refract", defaultValue: 1, forceSave: true);
-            Scribe_Values.Look(ref ground_light, "ground_light", defaultValue: 0.01f, forceSave: true);
-            Scribe_Values.Look(ref mie_amount, "mie_amount", defaultValue: 3.996f/scale, forceSave: true);
-            Scribe_Values.Look(ref mie_absorb, "mie_absorb", defaultValue: 1.11f, forceSave: true);
-            Scribe_Values.Look(ref H_Reayleigh, "H_Reayleigh", defaultValue: 0.08f*scale, forceSave: true);
-            Scribe_Values.Look(ref H_Mie, "H_Mie", defaultValue: 0.02f*scale, forceSave: true);
-            Scribe_Values.Look(ref H_OZone, "H_OZone", defaultValue: 0.25f*scale, forceSave: true);
-            Scribe_Values.Look(ref D_OZone, "D_OZone", defaultValue: 0.15f*scale, forceSave: true);
-            Scribe_Values.Look(ref translucentLUTSize, "translucentLUTSize", defaultValue: new Vector2(16, 16), forceSave: true);
-            Scribe_Values.Look(ref SunColor, "SunColor", defaultValue: new Vector3(1, 1, 1), forceSave: true);
-            Scribe_Values.Look(ref mie_eccentricity, "mie_eccentricity", defaultValue: new Vector3(0.618f,0.618f,0.618f), forceSave: true);
-            Scribe_Values.Look(ref reayleighScatterFactor, "reayleighScatterFactor", defaultValue: new Vector3(0.47293f,1.22733f,2.09377f)/scale, forceSave: true);
-            Scribe_Values.Look(ref OZoneAbsorbFactor, "OZoneAbsorbFactor", defaultValue: new Vector3(0.21195f,0.20962f,0.01686f)/scale, forceSave: true);
-            Scribe_Values.Look(ref scatterLUTSize, "scatterLUTSize", defaultValue: new Vector4( 8, 2, 2, 1), forceSave: true);
+            void SaveAndLoadValueFloat(ref float value, string label, float defaultValue = 0, bool forceSave = false)
+            {
+                value *= 1024;
+                Scribe_Values.Look(ref value, label, defaultValue, forceSave);
+                value /= 1024;
+            }
+            SaveAndLoadValueFloat(ref exposure, "exposure", defaultValue: 4, forceSave: true);
+            SaveAndLoadValueFloat(ref ground_refract, "ground_refract", defaultValue: 1, forceSave: true);
+            SaveAndLoadValueFloat(ref ground_light, "ground_light", defaultValue: 0.01f, forceSave: true);
+            SaveAndLoadValueFloat(ref mie_amount, "mie_amount", defaultValue: 3.996f/scale, forceSave: true);
+            SaveAndLoadValueFloat(ref mie_absorb, "mie_absorb", defaultValue: 1.11f, forceSave: true);
+            SaveAndLoadValueFloat(ref H_Reayleigh, "H_Reayleigh", defaultValue: 0.08f*scale, forceSave: true);
+            SaveAndLoadValueFloat(ref H_Mie, "H_Mie", defaultValue: 0.02f*scale, forceSave: true);
+            SaveAndLoadValueFloat(ref H_OZone, "H_OZone", defaultValue: 0.25f*scale, forceSave: true);
+            SaveAndLoadValueFloat(ref D_OZone, "D_OZone", defaultValue: 0.15f*scale, forceSave: true);
+            void SaveAndLoadValueVec2(ref Vector2 value, string label, Vector2 defaultValue = default(Vector2), bool forceSave = false)
+            {
+                value *= 1024;
+                Scribe_Values.Look(ref value, label, defaultValue, forceSave);
+                value /= 1024;
+            }
+            SaveAndLoadValueVec2(ref translucentLUTSize, "translucentLUTSize", defaultValue: new Vector2(16, 16), forceSave: true);
+            void SaveAndLoadValueVec3(ref Vector3 value, string label, Vector3 defaultValue = default(Vector3), bool forceSave = false)
+            {
+                value *= 1024;
+                Scribe_Values.Look(ref value, label, defaultValue, forceSave);
+                value /= 1024;
+            }
+            SaveAndLoadValueVec3(ref SunColor, "SunColor", defaultValue: new Vector3(1, 1, 1), forceSave: true);
+            SaveAndLoadValueVec3(ref mie_eccentricity, "mie_eccentricity", defaultValue: new Vector3(0.618f,0.618f,0.618f), forceSave: true);
+            SaveAndLoadValueVec3(ref reayleighScatterFactor, "reayleighScatterFactor", defaultValue: new Vector3(0.47293f,1.22733f,2.09377f)/scale, forceSave: true);
+            SaveAndLoadValueVec3(ref OZoneAbsorbFactor, "OZoneAbsorbFactor", defaultValue: new Vector3(0.21195f,0.20962f,0.01686f)/scale, forceSave: true);
+            void SaveAndLoadValueVec4(ref Vector4 value, string label, Vector4 defaultValue = default(Vector4), bool forceSave = false)
+            {
+                value *= 1024;
+                Scribe_Values.Look(ref value, label, defaultValue, forceSave);
+                value /= 1024;
+            }
+            SaveAndLoadValueVec4(ref scatterLUTSize, "scatterLUTSize", defaultValue: new Vector4( 8, 2, 2, 1), forceSave: true);
         }
 
         public static void DoWindowContents(Rect inRect)
@@ -185,6 +209,26 @@ namespace RW_PlanetAtmosphere
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*7f/4f,448,ScrollViewSize.x*0.5f/4f,32),scatterLUTSize.w.ToString("f5")),out newValue);
             if((int)newValue != scatterLUTSize.y) updated = false;
             scatterLUTSize.w = (int)newValue;
+
+            if(Widgets.ButtonText(new Rect(ScrollViewSize.x*0.5f,480,ScrollViewSize.x*0.5f,32), "reset".Translate()))
+            {
+                exposure = 4;
+                ground_refract = 1;
+                ground_light = 0.01f;
+                mie_amount = 3.996f/scale;
+                mie_absorb = 1.11f;
+                H_Reayleigh = 0.08f*scale;
+                H_Mie = 0.02f*scale;
+                H_OZone = 0.25f*scale;
+                D_OZone = 0.15f*scale;
+                translucentLUTSize = new Vector2(16, 16);
+                SunColor = new Vector3(1,1,1);
+                mie_eccentricity = new Vector3(0.618f,0.618f,0.618f);
+                reayleighScatterFactor = new Vector3(0.47293f,1.22733f,2.09377f);
+                OZoneAbsorbFactor = new Vector3(0.21195f,0.20962f,0.01686f)/scale;
+                scatterLUTSize = new Vector4( 8, 2, 2, 1);
+                updated = false;
+            }
 
 
             Widgets.DrawLineVertical(ScrollViewSize.x*0.5f,0,ScrollViewSize.y);
