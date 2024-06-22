@@ -72,7 +72,7 @@ namespace RW_PlanetAtmosphere
             {
                 materialLUT = new Material(SkyBox_LUT)
                 {
-                    renderQueue = 3545
+                    renderQueue = 3550
                 };
 
                 mesh = new Mesh();

@@ -25,9 +25,9 @@ float2 Map2AH(float2 map)
     map = clamp(map,float2(0.0,0.0),float2(1.0,1.0));
     map.y *= map.y;
     map.y *= maxh - minh;
-    map.y += minh + 0.0005;
+    map.y += minh;
     
-    float horizonAngA = asin(minh/map.y); //p
+    float horizonAngA = asin(clamp(minh/map.y,-1.0,1.0)); //p
     float horizonAngB = PI - horizonAngA; //p
     float ang = map.x*(1.0+sqrt(horizonAngA/horizonAngB))-1.0;
     map.x = horizonAngB*(1.0+sign(ang)*ang*ang);
@@ -42,9 +42,9 @@ float2 Map2AH(float2 map)
 
 float2 AH2Map(float2 ah)
 {
-    // ah = clamp(ah,float2(0.0,minh),float2(PI,maxh));
+    ah = clamp(ah,float2(0.0,minh),float2(PI,maxh));
 
-    float horizonAngA = asin(minh/ah.y); //p
+    float horizonAngA = asin(clamp(minh/ah.y,-1.0,1.0)); //p
     float horizonAngB = PI - horizonAngA; //p
     float ang = ah.x / horizonAngB - 1.0;
     ah.x = (1.0 + sign(ang) * sqrt(abs(ang)))/(1.0 + sqrt(horizonAngA/horizonAngB));
@@ -53,7 +53,7 @@ float2 AH2Map(float2 ah)
     // ah.x -= 0.5*PI;
     // ah.x = 0.5 + 0.5 * sign(ah.x) * sqrt(2.0*abs(ah.x)/PI);
 
-    ah.y -= minh + 0.0005;
+    ah.y -= minh;
     ah.y /= maxh - minh;
     ah.y = sqrt(ah.y);
     ah = clamp(ah,float2(0.0,0.0),float2(1.0,1.0));
@@ -208,60 +208,12 @@ void IngAirDensity(in float x0, in float h, out float reayleigh, out float mie, 
     
 }
 
-void IngAirDensityBlockByGround(in float x0, in float h, out float reayleigh, out float mie, out float oZone)
-{
-    float mh = 0.0;
-    if(h < maxh)
-    {
-        mh = sqrt(maxh*maxh-h*h);
-    }
-    float ml = -mh;
-    if(h < minh)
-    {
-        ml = sqrt(minh*minh-h*h);
-    }
-    if(x0 < ml && x0 > -ml)
-    {
-        reayleigh = float(1e16);
-        mie = float(1e16);
-        oZone = float(1e16);
-    }
-    else
-    {
-        if(x0 < -ml)
-        {
-            float mml = -ml;
-            ml = -mh;
-            mh = mml;
-        }
-        x0 = max(ml,x0);
-        x0 = min(mh,x0);
-        IngAirDensityFromTo(x0,mh,h,reayleigh,mie);
-        // oZone = abs(IngOZoneDensity(mh,h) - IngOZoneDensity(x0,h));
-        oZone = IngOZoneDensity(mh,h) - IngOZoneDensity(x0,h);
-    }
-    // x0 = max(ml,x0);
-    // x0 = min(mh,x0);
-    // IngAirDensityFromTo(x0,mh,h,reayleigh,mie);
-    // // oZone = abs(IngOZoneDensity(mh,h) - IngOZoneDensity(x0,h));
-    // oZone = IngOZoneDensity(mh,h) - IngOZoneDensity(x0,h);
-    
-}
-
 float3 translucentFromLUT(float2 ah)
 {
-    if(ah.y < minh - 0.0005) return float3(0.0,0.0,0.0);
+    if(ah.y < minh) return float3(0.0,0.0,0.0);
     ah = AH2Map(ah);
-    ah = (ah * (float2(0.5,1.0) * translucentLUT_TexelSize.zw - float2(1.0,1.0)) + float2(0.5,0.5)) * translucentLUT_TexelSize.xy;
+    ah = (ah * (translucentLUT_TexelSize.zw - float2(1.0,1.0)) + float2(0.5,0.5)) * translucentLUT_TexelSize.xy;
     return tex2Dlod(translucentLUT,float4(ah.x,ah.y,0.0,0.0)).xyz;
-}
-
-float3 translucentFromLUT_BlockByGround(float2 ah)
-{
-    if(ah.y < minh - 0.0005) return float3(0.0,0.0,0.0);
-    ah = AH2Map(ah);
-    ah = (ah * (float2(0.5,1.0) * translucentLUT_TexelSize.zw - float2(1.0,1.0)) + float2(0.5,0.5)) * translucentLUT_TexelSize.xy;
-    return tex2Dlod(translucentLUT,float4(ah.x + 0.5,ah.y,0.0,0.0)).xyz;
 }
 
 float3 scatterFromLUT(float4 ahlw)
@@ -334,7 +286,7 @@ float3 GenScatterInfo(float viewAng, float height, float lightAng, float lightTo
             float3 current_postion = l * viewDir;
             current_postion.y += height;
             float current_H = length(current_postion);
-            float3 current_light = translucentFromLUT(float2(acos(dot(current_postion/current_H,lightDir)),current_H));
+            float3 current_light = translucentFromLUT(float2(acos(clamp(dot(current_postion/current_H,lightDir),-1.0,1.0)),current_H));
             current_H -= minh;
             float current_reayleigh = exp(-current_H/H_Reayleigh);
             float current_mie = exp(-current_H/H_Mie);

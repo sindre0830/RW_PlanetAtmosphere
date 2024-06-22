@@ -62,10 +62,6 @@
                 // const float3 OZoneAbsorbFactor = float3(0.065,0.1881,0.0085);
                 float3 mieScatterFactor = mie_amount.xxx;
                 float3 mieAbsorbFactor = (mie_absorb * mie_amount).xxx;
-
-                i.uv.x *= 2.0;
-                int blockByGround = int(min(floor(i.uv.x),1.0));
-                i.uv.x -= blockByGround;
                 float2 uv = Map2AH(i.uv);
                 float reayleigh = 0.0;
                 float mie = 0.0;
@@ -73,8 +69,7 @@
                 float dis = 0.0;
                 float x0 = cos(uv.x)*uv.y;
                 float h0 = sin(uv.x)*uv.y;
-                if(blockByGround == 0) IngAirDensity(x0, h0, reayleigh, mie, oZone);
-                else IngAirDensityBlockByGround(x0, h0, reayleigh, mie, oZone);
+                IngAirDensity(x0, h0, reayleigh, mie, oZone);
                 float3 light = translucent(float3(1.0,1.0,1.0), reayleighScatterFactor, reayleigh);
                 light = translucent(light, mieScatterFactor + mieAbsorbFactor, mie);
                 light = translucent(light, OZoneAbsorbFactor, oZone);

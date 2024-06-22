@@ -47,13 +47,12 @@
             struct appdata
             {
                 float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
             };
 
             struct v2f
             {
                 float4 vertex : SV_POSITION;
-                float3 uv : TEXCOORD0;
+                float3 position : TEXCOORD0;
                 float3 screen : TEXCOORD1;
             };
 
@@ -75,7 +74,7 @@
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv =  mul(unity_ObjectToWorld, v.vertex).xyz - _WorldSpaceCameraPos.xyz;
+                o.position =  mul(unity_ObjectToWorld, v.vertex).xyz;
                 o.screen = o.vertex.xyw;
                 return o;
             }
@@ -249,15 +248,16 @@
                     if(x0 < -ml && h0 < minh)
                     {
                         float3 p = -(ml + x0) * infos.viewDir + float3(0.0,infos.h,0.0);
-                        float lightAng = acos(dot(infos.lightDir,p / minh));
+                        float lightAng = acos(clamp(dot(infos.lightDir,p / minh),-1.0,1.0));
+                        float viewAngG = acos(clamp(dot(-infos.viewDir,p / minh),-1.0,1.0));
+                        float viewAngS = acos(clamp(-infos.viewDir.y,-1.0,1.0));
                         float h = infos.h;
                         x0 = max(ml,x0);
                         x0 = min(mh,x0);
                         transToHeightAndDir(p,infos.lightDir,p,h);
                         surfaceLight += surfaceColor * lightColor * translucentFromLUT(float2(lightAng,minh));
                         // surfaceLight += surfaceColor * getScatterInfo(float3(0.0,1.0,0.0),p,lightColor,minh);
-                        result = surfaceLight * translucentFromLUT_BlockByGround(float2(atan2(h0,x0),sqrt(h0*h0+x0*x0)));
-                        // result = translucentFromLUT_BlockByGround(float2(atan2(h0,x0),sqrt(h0*h0+x0*x0)));
+                        result = surfaceLight * translucentFromLUT(float2(viewAngG,minh)) / translucentFromLUT(float2(viewAngS,infos.h));
                         result = max(result,0.0);
                     }
                     result += getScatterInfo(infos.viewDir,infos.lightDir,lightColor,infos.h);
@@ -340,7 +340,7 @@
                     // scatter = LightScatter(infos,LIGHT0_COLOR,groundColor,float3(0.0,0.0,0.0));
                     // float h0 = infos.h * length(infos.viewDir.xz);
                     // float x0 = infos.h * infos.viewDir.y;
-                    rgb *= translucentFromLUT(float2(acos(infos.viewDir.y),infos.h));
+                    rgb *= translucentFromLUT(float2(acos(clamp(infos.viewDir.y,-1.0,1.0)),infos.h));
                     // if (infos.dirInfos.e < 0.0) rgb = float3(0.0,0.0,0.0);
                     // COLOR = translucentFromLUTBlockByGround(float2(atan2(h0,x0),infos.h));
                     // COLOR = scatterFromLUT(float3(atan2(h0,x0),infos.h,0.0));
@@ -370,7 +370,7 @@
                 // const float3 OZoneAbsorbFactor = float3(0.065,0.1881,0.0085);
                 float3 color = SunColor;
                 float3 sun = normalize(_WorldSpaceLightPos0.xyz);
-                float3 eye = normalize(i.uv);
+                float3 eye = normalize(i.position - _WorldSpaceCameraPos.xyz);
                 float3 pos = _WorldSpaceCameraPos.xyz - mul(unity_ObjectToWorld, float4(0.0,0.0,0.0,1.0));
                 sky(color,sun,eye,pos,i.screen.xy/i.screen.z,color);
                 // // float2 SCREEN = i.screen.xy/i.screen.z;
