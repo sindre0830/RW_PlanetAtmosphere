@@ -282,6 +282,7 @@ namespace RW_PlanetAtmosphere
                         renderer.material = cloud;
                         transform.parent = this.transform;
                         transform.localScale = Vector3.one * (0.05f * (maxh - minh) + minh) / maxh; 
+                        gameObject.layer = WorldCameraManager.WorldLayer;
                     }
                     AtmosphereSettings.updated = true;
                 }
