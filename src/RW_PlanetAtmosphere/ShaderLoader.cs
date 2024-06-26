@@ -24,6 +24,7 @@ namespace RW_PlanetAtmosphere
         private static MeshRenderer meshRenderer = null;
         private static RenderTexture translucentLUT = null;
         private static RenderTexture scatterLUT = null;
+        private readonly static List<Material> materialCloudLUTs = new List<Material>();
 
         public static bool isEnable => materialSkyLUT != null && (materialSkyLUT.shader?.isSupported ?? false);
         static ShaderLoader()
@@ -146,9 +147,13 @@ namespace RW_PlanetAtmosphere
                     for(int i= 0; i < renderers.Length; i++)
                     {
                         if(renderers[i].transform == transform) continue;
-                        GameObject.Destroy(renderers[i].material);
                         GameObject.Destroy(renderers[i].gameObject);
                     }
+                    for(int i = 0; i < materialCloudLUTs.Count; i++)
+                    {
+                        GameObject.Destroy(materialCloudLUTs[i]);
+                    }
+                    materialCloudLUTs.Clear();
                     float minh = 100f;
                     float maxh = 100f + Mathf.Max
                     (
@@ -252,6 +257,7 @@ namespace RW_PlanetAtmosphere
                     mesh.RecalculateTangents();
                     mesh.UploadMeshData(false);
 
+                    materialCloudLUTs.Capacity = AtmosphereSettings.cloudTexPath.Count;
                     for(int i = 0; i < AtmosphereSettings.cloudTexPath.Count; i++)
                     {
                         if(AtmosphereSettings.cloudTexPath[i] == null) continue;
@@ -261,17 +267,17 @@ namespace RW_PlanetAtmosphere
                         {
                             renderQueue = 3556
                         };
-                        cloud.SetFloat("exposure", materialSkyLUT.GetFloat("exposure"));
-                        cloud.SetFloat("ground_refract", materialSkyLUT.GetFloat("ground_refract"));
-                        cloud.SetFloat("ground_light", materialSkyLUT.GetFloat("ground_light"));
-                        cloud.SetFloat("mie_amount", materialSkyLUT.GetFloat("mie_amount"));
-                        cloud.SetFloat("mie_absorb", materialSkyLUT.GetFloat("mie_absorb"));
+                        cloud.SetFloat("mie_amount", AtmosphereSettings.mie_amount);
+                        cloud.SetFloat("mie_absorb", AtmosphereSettings.mie_absorb);
+                        cloud.SetFloat("H_Reayleigh", AtmosphereSettings.H_Reayleigh);
+                        cloud.SetFloat("H_Mie", AtmosphereSettings.H_Mie);
+                        cloud.SetFloat("H_OZone", AtmosphereSettings.H_OZone);
+                        cloud.SetFloat("D_OZone", AtmosphereSettings.D_OZone);
                         cloud.SetFloat("minh", minh);
                         cloud.SetFloat("maxh", maxh);
-                        cloud.SetVector("SunColor", materialSkyLUT.GetVector("SunColor"));
-                        cloud.SetVector("mie_eccentricity", materialSkyLUT.GetVector("mie_eccentricity"));
-                        cloud.SetVector("reayleighScatterFactor", materialSkyLUT.GetVector("reayleighScatterFactor"));
-                        cloud.SetVector("scatterLUT_Size", new Vector4((int)scatterLUTSize.x << 4, (int)scatterLUTSize.y << 4, (int)scatterLUTSize.z << 4, (int)scatterLUTSize.w << 4));
+                        cloud.SetVector("reayleighScatterFactor", AtmosphereSettings.reayleighScatterFactor);
+                        cloud.SetVector("OZoneAbsorbFactor", AtmosphereSettings.OZoneAbsorbFactor);
+                        cloud.SetVector("scatterLUT_Size", new Vector4((int)scatterLUTSize.x, (int)scatterLUTSize.y , (int)scatterLUTSize.z, (int)scatterLUTSize.w));
                         cloud.SetTexture("cloudTexture", texture2D);
                         cloud.SetTexture("translucentLUT", translucentLUT);
                         cloud.SetTexture("scatterLUT", scatterLUT);
@@ -284,6 +290,7 @@ namespace RW_PlanetAtmosphere
                         transform.parent = this.transform;
                         transform.localScale = Vector3.one * (0.05f * (maxh - minh) + minh) / maxh; 
                         gameObject.layer = WorldCameraManager.WorldLayer;
+                        materialCloudLUTs.Add(cloud);
                     }
                     AtmosphereSettings.updated = true;
                 }
@@ -298,6 +305,16 @@ namespace RW_PlanetAtmosphere
                     materialSkyLUT.SetFloat("ground_light", AtmosphereSettings.ground_light);
                     materialSkyLUT.SetVector("SunColor", AtmosphereSettings.SunColor);
                     materialSkyLUT.SetVector("mie_eccentricity", AtmosphereSettings.mie_eccentricity);
+                    
+                    for(int i = 0; i < materialCloudLUTs.Count; i++)
+                    {
+                        Material cloud = materialCloudLUTs[i];
+                        cloud.SetFloat("exposure", AtmosphereSettings.exposure);
+                        cloud.SetFloat("ground_refract", AtmosphereSettings.ground_refract);
+                        cloud.SetFloat("ground_light", AtmosphereSettings.ground_light);
+                        cloud.SetVector("SunColor", AtmosphereSettings.SunColor);
+                        cloud.SetVector("mie_eccentricity", AtmosphereSettings.mie_eccentricity);
+                    }
                     Shader.SetGlobalVector("_WorldSpaceLightPos0",GenCelestial.CurSunPositionInWorldSpace());
                 }
             }
