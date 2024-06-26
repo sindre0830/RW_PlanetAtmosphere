@@ -247,6 +247,7 @@ namespace RW_PlanetAtmosphere
                     mesh.RecalculateBounds();
                     mesh.RecalculateNormals();
                     mesh.RecalculateTangents();
+                    mesh.UploadMeshData(false);
 
                     for(int i = 0; i < AtmosphereSettings.cloudTexPath.Count; i++)
                     {
