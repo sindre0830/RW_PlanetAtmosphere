@@ -12,7 +12,6 @@ namespace RW_PlanetAtmosphere
     internal static class ShaderLoader
     {
         public readonly static Material materialSkyLUT = null;
-        public readonly static List<Texture2D> cloudTexture = new List<Texture2D>();
         private static Mesh mesh = null;
         private static Shader SkyBox_LUT = null;
         private static Shader SkyBoxCloud_LUT = null;
@@ -178,7 +177,7 @@ namespace RW_PlanetAtmosphere
                         {
                             enableRandomWrite = true,
                             useMipMap = false,
-                            format = RenderTextureFormat.ARGBHalf,
+                            format = RenderTextureFormat.ARGBFloat,
                             wrapMode = TextureWrapMode.Clamp
                         };
                         translucentLUT.Create();
@@ -246,9 +245,11 @@ namespace RW_PlanetAtmosphere
                     mesh.RecalculateNormals();
                     mesh.RecalculateTangents();
 
-                    for(int i = 0; i < cloudTexture.Count; i++)
+                    for(int i = 0; i < AtmosphereSettings.cloudTexPath.Count; i++)
                     {
-                        if(cloudTexture[i] == null) continue;
+                        if(AtmosphereSettings.cloudTexPath[i] == null) continue;
+                        Texture2D texture2D = ContentFinder<Texture2D>.Get(AtmosphereSettings.cloudTexPath[i]);
+                        if(texture2D == null) continue;
                         Material cloud = new Material(SkyBoxCloud_LUT)
                         {
                             renderQueue = 3556
@@ -264,7 +265,7 @@ namespace RW_PlanetAtmosphere
                         cloud.SetVector("mie_eccentricity", materialSkyLUT.GetVector("mie_eccentricity"));
                         cloud.SetVector("reayleighScatterFactor", materialSkyLUT.GetVector("reayleighScatterFactor"));
                         cloud.SetVector("scatterLUT_Size", new Vector4((int)scatterLUTSize.x << 4, (int)scatterLUTSize.y << 4, (int)scatterLUTSize.z << 4, (int)scatterLUTSize.w << 4));
-                        cloud.SetTexture("cloudTexture", cloudTexture[i]);
+                        cloud.SetTexture("cloudTexture", texture2D);
                         cloud.SetTexture("translucentLUT", translucentLUT);
                         cloud.SetTexture("scatterLUT", scatterLUT);
                         GameObject gameObject = new GameObject();

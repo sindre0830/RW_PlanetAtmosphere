@@ -26,7 +26,7 @@ namespace RW_PlanetAtmosphere
         public static Vector3 reayleighScatterFactor = new Vector3(0.47293f,1.22733f,2.09377f)/scale;
         public static Vector3 OZoneAbsorbFactor = new Vector3(0.21195f,0.20962f,0.01686f)/scale;
         public static Vector4 scatterLUTSize = new Vector4( 8, 2, 2, 1);
-        public static List<string> cloudTexPath = new List<string>(){""};
+        public static List<string> cloudTexPath = new List<string>(){"EarthCloudTex/8k_earth_clouds"};
 
 
         private static Vector2 scrollPos = Vector2.zero;
@@ -79,13 +79,16 @@ namespace RW_PlanetAtmosphere
 
 
             cloudTexPath = cloudTexPath ?? new List<string>();
+            cloudTexPath.RemoveAll(x => x.NullOrEmpty());
             Scribe_Collections.Look(ref cloudTexPath, "cloudTexPath", LookMode.Value);
             cloudTexPath = cloudTexPath ?? new List<string>();
+            cloudTexPath.RemoveAll(x => x.NullOrEmpty());
         }
 
         public static void DoWindowContents(Rect inRect)
         {
             cloudTexPath = cloudTexPath ?? new List<string>();
+            cloudTexPath.RemoveAll(x => x.NullOrEmpty());
             Widgets.DrawLineHorizontal(0,31,inRect.width);
             Vector2 ScrollViewSize = new Vector2(inRect.width,544 + cloudTexPath.Count * 32);
             if(ScrollViewSize.y > inRect.height-64) ScrollViewSize.x -= 36;
@@ -202,6 +205,7 @@ namespace RW_PlanetAtmosphere
             {
                 cloudTexPath.Add(newPath);
             }
+            cloudTexPath.RemoveAll(x => x.NullOrEmpty());
 
             Widgets.DrawLineVertical(ScrollViewSize.x*0.5f,0,ScrollViewSize.y);
             Widgets.EndScrollView();
@@ -228,7 +232,7 @@ namespace RW_PlanetAtmosphere
                 reayleighScatterFactor = new Vector3(0.47293f,1.22733f,2.09377f);
                 OZoneAbsorbFactor = new Vector3(0.21195f,0.20962f,0.01686f)/scale;
                 scatterLUTSize = new Vector4( 8, 2, 2, 1);
-                cloudTexPath = new List<string>();
+                cloudTexPath = new List<string>(){"EarthCloudTex/8k_earth_clouds"};
                 updated = false;
             }
 
