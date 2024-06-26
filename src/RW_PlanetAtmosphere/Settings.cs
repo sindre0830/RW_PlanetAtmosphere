@@ -197,10 +197,10 @@ namespace RW_PlanetAtmosphere
             Widgets.Label(new Rect(0,512,ScrollViewSize.x*0.5f,32),"cloudTexPath".Translate());
             for(int i = 0; i < cloudTexPath.Count; i++)
             {
-                cloudTexPath[i] = Widgets.TextArea(new Rect(0, 512 + 32 * i, ScrollViewSize.x*0.5f, 32), cloudTexPath[i]);
+                cloudTexPath[i] = Widgets.TextField(new Rect(ScrollViewSize.x*0.5f, 512 + 32 * i, ScrollViewSize.x*0.5f, 32), cloudTexPath[i]);
             }
             string newPath = "";
-            newPath = Widgets.TextArea(new Rect(0, 512 + 32 * cloudTexPath.Count, ScrollViewSize.x*0.5f, 32), newPath);
+            newPath = Widgets.TextField(new Rect(ScrollViewSize.x*0.5f, 512 + 32 * cloudTexPath.Count, ScrollViewSize.x*0.5f, 32), newPath);
             if(newPath.Length > 0)
             {
                 cloudTexPath.Add(newPath);
