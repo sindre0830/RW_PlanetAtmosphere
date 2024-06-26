@@ -243,7 +243,7 @@ namespace RW_PlanetAtmosphere
                     materialSkyLUT.SetVector("scatterLUT_Size", new Vector4((int)scatterLUTSize.x, (int)scatterLUTSize.y , (int)scatterLUTSize.z, (int)scatterLUTSize.w));
 
                     
-                    SphereGenerator.Generate(4, maxh, Vector3.forward, 360f, out var outVerts, out var outIndices);
+                    SphereGenerator.Generate(8, maxh, Vector3.forward, 360f, out var outVerts, out var outIndices);
                     mesh.vertices = outVerts.ToArray();
                     mesh.triangles = outIndices.ToArray();
                     mesh.RecalculateBounds();
