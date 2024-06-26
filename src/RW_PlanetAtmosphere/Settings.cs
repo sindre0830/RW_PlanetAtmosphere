@@ -199,6 +199,8 @@ namespace RW_PlanetAtmosphere
             {
                 cloudTexPath[i] = Widgets.TextField(new Rect(ScrollViewSize.x*0.5f, 480 + 32 * i, ScrollViewSize.x*0.5f, 32), cloudTexPath[i]);
             }
+
+            Log.Message($"new path : {480 + 32 * cloudTexPath.Count}; ScrollViewSize.y : {ScrollViewSize.y}");
             string newPath = "";
             newPath = Widgets.TextField(new Rect(ScrollViewSize.x*0.5f, 480 + 32 * cloudTexPath.Count, ScrollViewSize.x*0.5f, 32), newPath);
             if(newPath.Length > 0)
