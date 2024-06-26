@@ -98,6 +98,8 @@ namespace RW_PlanetAtmosphere
                 meshRenderer.material = materialSkyLUT;
                 WorldCameraManager.WorldCamera.fieldOfView = 20;
                 WorldCameraManager.WorldSkyboxCamera.fieldOfView = 20;
+                WorldCameraManager.WorldCamera.depthTextureMode = DepthTextureMode.Depth;
+                WorldCameraManager.WorldSkyboxCamera.depthTextureMode = DepthTextureMode.Depth;
 
                 WorldMaterials.Rivers.shader = WorldMaterials.WorldTerrain.shader;
                 WorldMaterials.WorldOcean.shader = WorldMaterials.WorldTerrain.shader;
