@@ -149,8 +149,8 @@ namespace RW_PlanetAtmosphere
                         GameObject.Destroy(renderers[i].material);
                         GameObject.Destroy(renderers[i].gameObject);
                     }
-                    float minh = 99.85f;
-                    float maxh = 99.85f + Mathf.Max
+                    float minh = 100f;
+                    float maxh = 100f + Mathf.Max
                     (
                         AtmosphereSettings.H_OZone + AtmosphereSettings.D_OZone,
                         -Mathf.Log(0.00001f)*(Mathf.Max
