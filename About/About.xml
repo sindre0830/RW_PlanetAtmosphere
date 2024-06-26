@@ -10,7 +10,7 @@
 		<li>1.5</li>
 	</supportedVersions>
 	<packageId>RWNodeTree.RWPlanetAtmosphere</packageId>
-	<description>As the name, This is a Weapon Modularization Mod, allow you modify your weapon in the game</description>
+	<description>As the name, This mod add the planet atmosphere effect for game</description>
 	<modDependencies>
 		<li>
 			<packageId>brrainz.harmony</packageId>

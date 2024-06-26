@@ -37,32 +37,32 @@ namespace RW_PlanetAtmosphere.Patch
         {
             WorldLayer_dirty(instance) = false;
             WorldLayer_ClearSubMeshes.Invoke(instance,new object[]{MeshParts.All});
-            if(ShaderLoader.isEnable)
-            {
-                ShaderLoader.mesh.vertices = new Vector3[]
-                {
-                    new Vector3(-200,-200,-200),
-                    new Vector3( 200,-200,-200),
-                    new Vector3(-200, 200,-200),
-                    new Vector3( 200, 200,-200),
-                    new Vector3(-200,-200, 200),
-                    new Vector3( 200,-200, 200),
-                    new Vector3(-200, 200, 200),
-                    new Vector3( 200, 200, 200)
-                };
-                ShaderLoader.mesh.triangles = new int[]
-                {
-                    0,2,1,3,1,2,
-                    5,7,4,6,4,7,
-                    4,6,0,2,0,6,
-                    1,3,5,7,5,3,
-                    2,6,3,7,3,6,
-                    4,0,5,1,5,0
-                };
-                ShaderLoader.mesh.RecalculateBounds();
-                ShaderLoader.mesh.RecalculateNormals();
-                ShaderLoader.mesh.RecalculateTangents();
-            }
+            // if(ShaderLoader.isEnable)
+            // {
+            //     ShaderLoader.mesh.vertices = new Vector3[]
+            //     {
+            //         new Vector3(-200,-200,-200),
+            //         new Vector3( 200,-200,-200),
+            //         new Vector3(-200, 200,-200),
+            //         new Vector3( 200, 200,-200),
+            //         new Vector3(-200,-200, 200),
+            //         new Vector3( 200,-200, 200),
+            //         new Vector3(-200, 200, 200),
+            //         new Vector3( 200, 200, 200)
+            //     };
+            //     ShaderLoader.mesh.triangles = new int[]
+            //     {
+            //         0,2,1,3,1,2,
+            //         5,7,4,6,4,7,
+            //         4,6,0,2,0,6,
+            //         1,3,5,7,5,3,
+            //         2,6,3,7,3,6,
+            //         4,0,5,1,5,0
+            //     };
+            //     ShaderLoader.mesh.RecalculateBounds();
+            //     ShaderLoader.mesh.RecalculateNormals();
+            //     ShaderLoader.mesh.RecalculateTangents();
+            // }
             yield break;
         }
 

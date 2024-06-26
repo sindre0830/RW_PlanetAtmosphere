@@ -2,8 +2,6 @@
 {
     Properties
     {
-        groundColor ("ground Color", Color) = (1,1,1,1)
-        // mie_eccentricity ("mie eccentricity", Color) = (0.618,0.618,0.618,1)
         mie_amount ("mie amount", Range(0, 10)) = 3.996
         mie_absorb ("mie absorb", Range(0, 10)) = 1.11
         minh ("planet ground radius", float) = 63.71393
@@ -45,7 +43,6 @@
                 float2 uv : TEXCOORD0;
             };
 
-            float4 groundColor;
             
             v2f vert (appdata v)
             {
@@ -57,6 +54,8 @@
 
             float4 frag (v2f i) : SV_Target
             {
+                i.uv *= translucentLUT_TexelSize.zw;
+                i.uv /= translucentLUT_TexelSize.zw-float2(1.0,1.0);
                 // const float3 reayleighScatterFactor = float3(0.58,1.35,3.31);
                 // const float3 OZoneAbsorbFactor = float3(0.21195,0.20962,0.01686);
                 // const float3 OZoneAbsorbFactor = float3(0.065,0.1881,0.0085);
@@ -73,6 +72,7 @@
                 float3 light = translucent(float3(1.0,1.0,1.0), reayleighScatterFactor, reayleigh);
                 light = translucent(light, mieScatterFactor + mieAbsorbFactor, mie);
                 light = translucent(light, OZoneAbsorbFactor, oZone);
+                // light = clamp(light,1.0/4096.0,1.0);
                 return float4(light.x,light.y,light.z,1.0);
             }
 

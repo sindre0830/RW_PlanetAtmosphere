@@ -3,6 +3,7 @@ sampler2D translucentLUT;
 sampler2D scatterLUT;
 float4 translucentLUT_TexelSize;
 float4 scatterLUT_Size;
+float4 mie_eccentricity;
 float3 reayleighScatterFactor;
 float3 OZoneAbsorbFactor;
 float mie_amount;
@@ -13,12 +14,56 @@ float H_Reayleigh;
 float H_Mie;
 float H_OZone;
 float D_OZone;
+float exposure;
 
 #define ingCount 2048
 // #define ingLightCount 8
 
 #define PI 3.1415926535897932384626433832795
 
+            
+float3 hdr(float3 L) 
+{
+    L = L * exposure;
+    L.r = L.r < 1.413 ? pow(L.r * 0.38317, 1.0 / 2.2) : 1.0 - exp(-L.r);
+    L.g = L.g < 1.413 ? pow(L.g * 0.38317, 1.0 / 2.2) : 1.0 - exp(-L.g);
+    L.b = L.b < 1.413 ? pow(L.b * 0.38317, 1.0 / 2.2) : 1.0 - exp(-L.b);
+    return L;
+}
+
+float3 ACESTonemap(float3 color){
+    const float a = 2.51;  // Default: 2.51f
+    const float b = 0.03;  // Default: 0.03f
+    const float c = 2.43;  // Default: 2.43f
+    const float d = 0.59;  // Default: 0.59f
+    const float e = 0.14;  // Default: 0.14f
+    const float p = 1.3;
+    const float overlap = 0.2;
+    
+    const float rgOverlap = 0.1 * 0.2;
+    const float rbOverlap = 0.01 * 0.2;
+    const float gbOverlap = 0.04 * 0.2;
+    
+    const float3x3 coneOverlap = 	float3x3(
+                                    float3(1.0          , 0.1 * 0.2 , 0.01 * 0.2),
+                                    float3(0.1 * 0.2    , 1.0       , 0.04 * 0.2),
+                                    float3(0.01 * 0.2   , 0.1 * 0.2 , 1.0       )
+                                    );
+    
+    const float3x3 coneOverlapInverse = float3x3(
+                                    float3(	1.0 + (0.1 * 0.2 + 0.01 * 0.2)  , 					    -0.1 * 0.2  ,	-0.01 * 0.2			            ),
+                                    float3(	-0.1 * 0.2					    ,   1.0 + (0.1 * 0.2 + 0.04 * 0.2)  ,	-0.04 * 0.2					    ),
+                                    float3(	-0.01 * 0.2					    , 					    -0.1 * 0.2  ,	1.0 + (0.01 * 0.2 + 0.1 * 0.2)  )
+                                    );
+    
+    color = mul(coneOverlap,color);
+    color = pow(color, float3(p,p,p));
+    color = (color * (a * color + b)) / (color * (c * color + d) + e);
+    color = pow(color, float3(1.0,1.0,1.0)/p);
+    color = mul(coneOverlapInverse,color);
+    color = clamp(color,float3(0.0,0.0,0.0),float3(1.0,1.0,1.0));
+    return color;
+}
 
 float2 Map2AH(float2 map)
 {
@@ -42,7 +87,7 @@ float2 Map2AH(float2 map)
 
 float2 AH2Map(float2 ah)
 {
-    ah = clamp(ah,float2(0.0,minh),float2(PI,maxh));
+    // ah = clamp(ah,float2(0.0,minh),float2(PI,maxh));
 
     float horizonAngA = asin(clamp(minh/ah.y,-1.0,1.0)); //p
     float horizonAngB = PI - horizonAngA; //p
@@ -65,6 +110,8 @@ float4 Map2AHLW(float2 map)
 {
     map = clamp(map,0.0,1.0);
     map *= scatterLUT_Size.xy*scatterLUT_Size.zw-float2(1.0,1.0);
+    // map -= float2(0.5,0.5);
+    // map *= scatterLUT_Size.xy*scatterLUT_Size.zw;
     float4 result = map.xyxy;
     result.zw = floor(result.zw / scatterLUT_Size.xy);
     result.xy = (result.xy - result.zw * scatterLUT_Size.xy) / (scatterLUT_Size.xy - float2(1.0,1.0));
@@ -213,7 +260,7 @@ float3 translucentFromLUT(float2 ah)
     if(ah.y < minh) return float3(0.0,0.0,0.0);
     ah = AH2Map(ah);
     ah = (ah * (translucentLUT_TexelSize.zw - float2(1.0,1.0)) + float2(0.5,0.5)) * translucentLUT_TexelSize.xy;
-    return tex2Dlod(translucentLUT,float4(ah.x,ah.y,0.0,0.0)).xyz;
+    return clamp(tex2Dlod(translucentLUT,float4(ah.x,ah.y,0.0,0.0)).xyz, 0.0, 1.0);
 }
 
 float3 scatterFromLUT(float4 ahlw)
@@ -223,12 +270,15 @@ float3 scatterFromLUT(float4 ahlw)
     ahlw = clamp(ahlw,0.0,1.0) * (scatterLUT_Size - float4(1.0,1.0,1.0,1.0));
     ahlw.xy += float2(0.5,0.5);
     float2 zwFloor = clamp(floor(ahlw.zw),float2(0.0,0.0),scatterLUT_Size.zw - float2(1.0,1.0));
-    float2 from = ahlw.xy / scatterLUT_Size.xy + zwFloor;
-    float2 to = (from + float2(1.0,1.0)) / scatterLUT_Size.zw;
-    from /= scatterLUT_Size.zw;
-    // float2 wFrom = clamp(ceil(ahlw.zw) - ahlw.zw,0.0,1.0);
+    float2 zwCeil = clamp(zwFloor + float2(1.0,1.0),float2(0.0,0.0),scatterLUT_Size.zw - float2(1.0,1.0));
+    float2 from = (ahlw.xy / scatterLUT_Size.xy + zwFloor) / scatterLUT_Size.zw;
+    float2 to = (ahlw.xy / scatterLUT_Size.xy + zwCeil) / scatterLUT_Size.zw;
+    // return to.xyy;
+    // float2 wFrom = clamp(zwCeil - ahlw.zw,0.0,1.0);
     float2 wTo = clamp(ahlw.zw - zwFloor,0.0,1.0);
     float2 wFrom = float2(1.0,1.0) - wTo;
+
+    // return tex2Dlod(scatterLUT,float4(to.x,to.y,0.0,0.0)).xyz;
 
     return  (tex2Dlod(scatterLUT,float4(from.x,from.y,0.0,0.0)).xyz * wFrom.y + tex2Dlod(scatterLUT,float4(from.x,to.y,0.0,0.0)).xyz * wTo.y) * wFrom.x +
             (tex2Dlod(scatterLUT,float4(to.x,from.y,0.0,0.0)).xyz * wFrom.y + tex2Dlod(scatterLUT,float4(to.x,to.y,0.0,0.0)).xyz * wTo.y) * wTo.x;
@@ -319,4 +369,175 @@ float3 GenScatterInfo(float viewAng, float height, float lightAng, float lightTo
         }
     }
     return max(result, float3(0.0,0.0,0.0));
+}
+
+
+struct IngAirFogPropInfo
+{
+    float h;
+    float depth;
+    float3 viewDir;
+    float3 lightDir;
+};
+
+float3x3 Crossfloat3x3_W2L(float3 d1, float3 d2) //d1,d2 on x-y plane, x axis lock on d1
+{
+    d1 = normalize(d1);
+    d2 = normalize(d2);
+    float3 d3 = normalize(cross(d1,d2));
+    d2 = normalize(cross(d3,d1));
+    return float3x3(d1,d2,d3);
+}
+
+IngAirFogPropInfo getIngAirFogPropInfoByRelPos(float3 relPos, float3 viewDir, float3 lightDir, float depth)
+{
+    float3 d1 = abs(relPos);
+    if (d1.y < d1.x)
+    {
+        if (d1.z < d1.y) d1 = float3(0.0,0.0,1.0);
+        else d1 = float3(0.0,1.0,0.0);
+    }
+    else
+    {
+        if (d1.z < d1.x) d1 = float3(0.0,0.0,1.0);
+        else d1 = float3(1.0,0.0,0.0);
+    }
+    float3x3 proj = Crossfloat3x3_W2L(relPos,d1);
+    IngAirFogPropInfo result;
+    result.h = length(relPos);
+    result.depth = depth;
+    result.viewDir = normalize(mul(proj,viewDir)).yxz;
+    result.lightDir = normalize(mul(proj,lightDir)).yxz;
+    
+    float h0 = result.h * length(result.viewDir.xz);
+    float x0 = result.h * result.viewDir.y;
+    float mh = sqrt(maxh*maxh-h0*h0)*step(h0,maxh);
+    if(x0 < -mh && x0 + result.depth >= -mh)
+    {
+        relPos = float3(0.0,result.h,0.0) - (x0 + mh) * result.viewDir;
+        d1 = abs(relPos);
+        if (d1.y < d1.x)
+        {
+            if (d1.z < d1.y) d1 = float3(0.0,0.0,1.0);
+            else d1 = float3(0.0,1.0,0.0);
+        }
+        else
+        {
+            if (d1.z < d1.x) d1 = float3(0.0,0.0,1.0);
+            else d1 = float3(1.0,0.0,0.0);
+        }
+        proj = Crossfloat3x3_W2L(relPos,d1);
+        result.h = maxh;
+        result.depth += mh + x0;
+        result.viewDir = normalize(mul(proj,result.viewDir)).yxz;
+        result.lightDir = normalize(mul(proj,result.lightDir)).yxz;
+        x0 = -mh;
+        depth = result.depth;
+    }
+    float ml = sqrt(minh*minh-h0*h0)*step(h0,minh);
+    if(x0 < -ml) result.depth = min(result.depth,-ml-x0);
+    return result;
+}
+
+float reayleighStrong(float cosw)
+{
+    return 0.05968310365946075091333141126469*(1.0+cosw*cosw);
+}
+
+float3 mieStrong(float cosw)
+{
+    float3 mie = mie_eccentricity.xyz * 2.0 - float3(1.0,1.0,1.0);
+    float3 g = mie * mie;
+    return 0.07957747154594766788444188168626*(float3(1.0,1.0,1.0)-g)*(1.0+cosw*cosw)/((float3(2.0,2.0,2.0)+g)*pow(float3(1.0,1.0,1.0)+g-2.0*mie*cosw,float3(1.5,1.5,1.5)));
+}
+
+float3 getScatterInfo(float3 viewDir, float3 lightDir, float3 lightColor, float3 transGround, float h, float depth)
+{
+    // const float3 reayleighScatterFactor = float3(0.58,1.35,3.31);
+    // const float3 OZoneAbsorbFactor = float3(0.21195,0.20962,0.01686);
+    // const float3 OZoneAbsorbFactor = float3(0.065,0.1881,0.0085);
+    float3 mieScatterFactor = mie_amount.xxx;
+    float3 mieAbsorbFactor = (mie_absorb * mie_amount).xxx;
+    // float3 offset = float3(0.0);
+    h = abs(h);
+    float a = acos(clamp(viewDir.y,-1.0,1.0));
+    float l = acos(clamp(lightDir.y,-1.0,1.0));
+    float w = acos(clamp(dot(normalize(viewDir.xz),normalize(lightDir.xz)),-1.0,1.0));
+    // float h0 = h * length(viewDir.xz);
+    if (h < minh) return float3(0.0,0.0,0.0);
+
+    // float d = SAMPLE
+
+    lightColor = abs(lightColor);
+    float cosw = dot(viewDir,lightDir);
+    float3 all = scatterFromLUT(float4(a,h,l,w)) * lightColor;
+
+    // return all;
+
+    float3 p = depth * viewDir + float3(0.0,h,0.0);
+    h = length(p);
+
+    // return transGround;
+    
+    if(h < maxh)
+    {
+        a = acos(clamp(dot(viewDir,p / h),-1.0,1.0));
+        l = acos(clamp(dot(lightDir,p / h),-1.0,1.0));
+        h = max(h,minh);
+        // return scatterFromLUT(float4(a,h,l,w));
+        // w = acos(clamp(dot(normalize(viewDir.xz),normalize(lightDir.xz)),-1.0,1.0));
+        all -= scatterFromLUT(float4(a,h,l,w)) * lightColor * transGround;
+    }
+
+    // return float4(a,h,l,w).yyy;
+    float3 r = all * reayleighScatterFactor / (reayleighScatterFactor + mieScatterFactor);
+    float3 m = all * mieScatterFactor / (reayleighScatterFactor + mieScatterFactor);
+    
+    float reayleigh = reayleighStrong(cosw);
+    // float reayleigh = 0.620350490899400016668;
+    float3 mie = mieStrong(cosw);
+    // float3 mie = (mie_eccentricity * 2.0 - float3(1.0)) * 0.310175245449700008334;
+    r *= reayleigh * reayleighScatterFactor;
+    m *= mie * mieScatterFactor;
+    return r + m;
+}
+
+//blocked light
+float3 LightScatter(IngAirFogPropInfo infos, float3 lightColor, float3 surfaceColor, float3 surfaceLight, out float3 transGround)
+{
+    // const float3 reayleighScatterFactor = float3(0.58,1.35,3.31);
+    // const float3 OZoneAbsorbFactor = float3(0.21195,0.20962,0.01686);
+    // const float3 OZoneAbsorbFactor = float3(0.065,0.1881,0.0085);
+    float viewAngS = acos(clamp(infos.viewDir.y,-1.0,1.0));
+    float3 transLight = float3(1.0,1.0,1.0);
+    float3 mieScatterFactor = mie_amount.xxx;
+    float3 mieAbsorbFactor = (mie_absorb * mie_amount).xxx;
+
+    transGround = translucentFromLUT(float2(viewAngS,infos.h));
+    float3 result = float3(0.0,0.0,0.0);
+
+    // float h0 = infos.h * length(infos.viewDir.xz);
+    // float x0 = infos.h * infos.viewDir.y;
+    float3 p = infos.depth * infos.viewDir + float3(0.0,infos.h,0.0);
+    if(infos.h <= maxh)
+    {
+        float h = length(p);
+        if(h < maxh)
+        {
+            float lightAng = acos(clamp(dot(infos.lightDir,p / h),-1.0,1.0));
+            float viewAngG = acos(clamp(dot(infos.viewDir,p / h),-1.0,1.0));
+            h = max(h,minh);
+            transLight = translucentFromLUT(float2(lightAng,h));
+            if(2.0 * viewAngG < PI) transGround = clamp(transGround / translucentFromLUT(float2(viewAngG,h)),0.0,1.0);
+            else transGround = clamp(translucentFromLUT(float2(PI - viewAngG,h)) / translucentFromLUT(float2(PI - viewAngS,infos.h)),0.0,1.0);
+            
+            surfaceLight += surfaceColor * lightColor * transLight;
+            surfaceLight *= transGround;
+            result += max(surfaceLight,0.0);
+            // return surfaceColor;
+        }
+        result += getScatterInfo(infos.viewDir,infos.lightDir,lightColor,transGround,infos.h,infos.depth);
+    }
+    // return transGround;
+    return max(float3(0.0,0.0,0.0),result);
 }

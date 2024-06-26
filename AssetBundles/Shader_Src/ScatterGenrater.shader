@@ -2,8 +2,6 @@
 {
     Properties
     {
-        groundColor ("ground Color", Color) = (1,1,1,1)
-        // mie_eccentricity ("mie eccentricity", Color) = (0.618,0.618,0.618,1)
         mie_amount ("mie amount", Range(0, 10)) = 3.996
         mie_absorb ("mie absorb", Range(0, 10)) = 1.11
         minh ("planet ground radius", float) = 63.71393
@@ -44,8 +42,6 @@
                 float4 vertex : SV_POSITION;
                 float2 uv : TEXCOORD0;
             };
-
-            float4 groundColor;
             
             v2f vert (appdata v)
             {
@@ -57,6 +53,8 @@
 
             float4 frag (v2f i) : SV_Target
             {
+                i.uv *= scatterLUT_Size.xy*scatterLUT_Size.zw;
+                i.uv /= scatterLUT_Size.xy*scatterLUT_Size.zw-float2(1.0,1.0);
                 float4 ahlw = Map2AHLW(i.uv);
                 // return ahlw.yyyy-float4(minh,minh,minh,minh);
                 float3 res = GenScatterInfo(ahlw.x, ahlw.y, ahlw.z, ahlw.w);

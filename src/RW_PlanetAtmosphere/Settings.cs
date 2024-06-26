@@ -4,6 +4,7 @@ using RimWorld.Planet;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.PlayerLoop;
+using System;
 
 namespace RW_PlanetAtmosphere
 {
@@ -25,6 +26,7 @@ namespace RW_PlanetAtmosphere
         public static Vector3 reayleighScatterFactor = new Vector3(0.47293f,1.22733f,2.09377f)/scale;
         public static Vector3 OZoneAbsorbFactor = new Vector3(0.21195f,0.20962f,0.01686f)/scale;
         public static Vector4 scatterLUTSize = new Vector4( 8, 2, 2, 1);
+        public static List<string> cloudTexPath = new List<string>(){""};
 
 
         private static Vector2 scrollPos = Vector2.zero;
@@ -74,12 +76,18 @@ namespace RW_PlanetAtmosphere
                 value /= 1024;
             }
             SaveAndLoadValueVec4(ref scatterLUTSize, "scatterLUTSize", defaultValue: new Vector4( 8, 2, 2, 1), forceSave: true);
+
+
+            cloudTexPath = cloudTexPath ?? new List<string>();
+            Scribe_Collections.Look(ref cloudTexPath, "cloudTexPath", LookMode.Value);
+            cloudTexPath = cloudTexPath ?? new List<string>();
         }
 
         public static void DoWindowContents(Rect inRect)
         {
+            cloudTexPath = cloudTexPath ?? new List<string>();
             Widgets.DrawLineHorizontal(0,31,inRect.width);
-            Vector2 ScrollViewSize = new Vector2(inRect.width,512);
+            Vector2 ScrollViewSize = new Vector2(inRect.width,544 + cloudTexPath.Count * 32);
             if(ScrollViewSize.y > inRect.height-64) ScrollViewSize.x -= 36;
             Widgets.BeginScrollView(new Rect(0,32,inRect.width,inRect.height-64),ref scrollPos,new Rect(Vector2.zero, ScrollViewSize));
 
@@ -183,6 +191,17 @@ namespace RW_PlanetAtmosphere
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*7f/4f,448,ScrollViewSize.x*0.5f/4f,32),scatterLUTSize.w.ToString("f5")),out newValue);
             scatterLUTSize.w = (int)newValue;
 
+            Widgets.Label(new Rect(0,512,ScrollViewSize.x*0.5f,32),"cloudTexPath".Translate());
+            for(int i = 0; i < cloudTexPath.Count; i++)
+            {
+                cloudTexPath[i] = Widgets.TextArea(new Rect(0, 512 + 32 * i, ScrollViewSize.x*0.5f, 32), cloudTexPath[i]);
+            }
+            string newPath = "";
+            newPath = Widgets.TextArea(new Rect(0, 512 + 32 * cloudTexPath.Count, ScrollViewSize.x*0.5f, 32), newPath);
+            if(newPath.Length > 0)
+            {
+                cloudTexPath.Add(newPath);
+            }
 
             Widgets.DrawLineVertical(ScrollViewSize.x*0.5f,0,ScrollViewSize.y);
             Widgets.EndScrollView();
@@ -209,14 +228,15 @@ namespace RW_PlanetAtmosphere
                 reayleighScatterFactor = new Vector3(0.47293f,1.22733f,2.09377f);
                 OZoneAbsorbFactor = new Vector3(0.21195f,0.20962f,0.01686f)/scale;
                 scatterLUTSize = new Vector4( 8, 2, 2, 1);
+                cloudTexPath = new List<string>();
                 updated = false;
             }
 
-            ShaderLoader.materialLUT.SetFloat("exposure", exposure);
-            ShaderLoader.materialLUT.SetFloat("ground_refract", ground_refract);
-            ShaderLoader.materialLUT.SetFloat("ground_light", ground_light);
-            ShaderLoader.materialLUT.SetVector("SunColor", SunColor);
-            ShaderLoader.materialLUT.SetVector("mie_eccentricity", mie_eccentricity);
+            ShaderLoader.materialSkyLUT.SetFloat("exposure", exposure);
+            ShaderLoader.materialSkyLUT.SetFloat("ground_refract", ground_refract);
+            ShaderLoader.materialSkyLUT.SetFloat("ground_light", ground_light);
+            ShaderLoader.materialSkyLUT.SetVector("SunColor", SunColor);
+            ShaderLoader.materialSkyLUT.SetVector("mie_eccentricity", mie_eccentricity);
 
         }
     }
