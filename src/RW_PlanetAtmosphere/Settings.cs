@@ -32,7 +32,7 @@ namespace RW_PlanetAtmosphere
         private static Vector2 scrollPos = Vector2.zero;
 
 
-        private const float scale = 99.85f/63.71393f;
+        private const float scale = 100f/63.71393f;
 
         public override void ExposeData()
         {
