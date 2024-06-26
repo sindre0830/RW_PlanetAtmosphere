@@ -84,7 +84,7 @@ namespace RW_PlanetAtmosphere
             {
                 materialSkyLUT = new Material(SkyBox_LUT)
                 {
-                    renderQueue = 3555
+                    renderQueue = 3595
                 };
 
                 mesh = new Mesh();
@@ -265,7 +265,7 @@ namespace RW_PlanetAtmosphere
                         if(texture2D == null) continue;
                         Material cloud = new Material(SkyBoxCloud_LUT)
                         {
-                            renderQueue = 3556
+                            renderQueue = 3596
                         };
                         cloud.SetFloat("mie_amount", AtmosphereSettings.mie_amount);
                         cloud.SetFloat("mie_absorb", AtmosphereSettings.mie_absorb);
