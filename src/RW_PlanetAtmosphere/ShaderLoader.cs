@@ -140,20 +140,15 @@ namespace RW_PlanetAtmosphere
             {
                 if(!AtmosphereSettings.updated && isEnable)
                 {
-                    MeshRenderer[] filters = this.GetComponentsInChildren<MeshRenderer>();
-                    for(int i= 0; i < filters.Length; i++)
+                    MeshRenderer[] renderers = this.GetComponentsInChildren<MeshRenderer>();
+                    for(int i= 0; i < renderers.Length; i++)
                     {
-                        GameObject.Destroy(filters[i].material);
-                        GameObject.Destroy(filters[i].gameObject);
+                        if(renderers[i].transform == transform) continue;
+                        GameObject.Destroy(renderers[i].material);
+                        GameObject.Destroy(renderers[i].gameObject);
                     }
-                    materialSkyLUT.SetFloat("mie_amount", AtmosphereSettings.mie_amount);
-                    materialSkyLUT.SetFloat("mie_absorb", AtmosphereSettings.mie_absorb);
-                    materialSkyLUT.SetFloat("H_Reayleigh", AtmosphereSettings.H_Reayleigh);
-                    materialSkyLUT.SetFloat("H_Mie", AtmosphereSettings.H_Mie);
-                    materialSkyLUT.SetFloat("H_OZone", AtmosphereSettings.H_OZone);
-                    materialSkyLUT.SetFloat("D_OZone", AtmosphereSettings.D_OZone);
-                    materialSkyLUT.SetFloat("minh", 99.85f);
-                    materialSkyLUT.SetFloat("maxh", 99.85f + Mathf.Max
+                    float minh = 99.85f;
+                    float maxh = 99.85f + Mathf.Max
                     (
                         AtmosphereSettings.H_OZone + AtmosphereSettings.D_OZone,
                         -Mathf.Log(0.00001f)*(Mathf.Max
@@ -163,7 +158,15 @@ namespace RW_PlanetAtmosphere
                             AtmosphereSettings.reayleighScatterFactor.z
                         ) * AtmosphereSettings.H_Reayleigh),
                         -Mathf.Log(0.00001f)*(AtmosphereSettings.mie_amount * (AtmosphereSettings.mie_absorb + 1.0f) * AtmosphereSettings.H_Mie)
-                    ));
+                    );
+                    materialSkyLUT.SetFloat("mie_amount", AtmosphereSettings.mie_amount);
+                    materialSkyLUT.SetFloat("mie_absorb", AtmosphereSettings.mie_absorb);
+                    materialSkyLUT.SetFloat("H_Reayleigh", AtmosphereSettings.H_Reayleigh);
+                    materialSkyLUT.SetFloat("H_Mie", AtmosphereSettings.H_Mie);
+                    materialSkyLUT.SetFloat("H_OZone", AtmosphereSettings.H_OZone);
+                    materialSkyLUT.SetFloat("D_OZone", AtmosphereSettings.D_OZone);
+                    materialSkyLUT.SetFloat("minh", minh);
+                    materialSkyLUT.SetFloat("maxh", maxh);
                     materialSkyLUT.SetVector("reayleighScatterFactor", AtmosphereSettings.reayleighScatterFactor);
                     materialSkyLUT.SetVector("OZoneAbsorbFactor", AtmosphereSettings.OZoneAbsorbFactor);
                     Vector4 scatterLUTSize = AtmosphereSettings.scatterLUTSize * 16;
@@ -204,8 +207,8 @@ namespace RW_PlanetAtmosphere
                     materialTranslucentGenrater.SetVector("OZoneAbsorbFactor", materialSkyLUT.GetVector("OZoneAbsorbFactor"));
                     materialTranslucentGenrater.SetFloat("mie_amount", materialSkyLUT.GetFloat("mie_amount"));
                     materialTranslucentGenrater.SetFloat("mie_absorb", materialSkyLUT.GetFloat("mie_absorb"));
-                    materialTranslucentGenrater.SetFloat("minh", materialSkyLUT.GetFloat("minh"));
-                    materialTranslucentGenrater.SetFloat("maxh", materialSkyLUT.GetFloat("maxh"));
+                    materialTranslucentGenrater.SetFloat("minh", minh);
+                    materialTranslucentGenrater.SetFloat("maxh", maxh);
                     materialTranslucentGenrater.SetFloat("H_Reayleigh", materialSkyLUT.GetFloat("H_Reayleigh"));
                     materialTranslucentGenrater.SetFloat("H_Mie", materialSkyLUT.GetFloat("H_Mie"));
                     materialTranslucentGenrater.SetFloat("H_OZone", materialSkyLUT.GetFloat("H_OZone"));
@@ -219,8 +222,8 @@ namespace RW_PlanetAtmosphere
                     materialScatterGenrater.SetVector("OZoneAbsorbFactor", materialSkyLUT.GetVector("OZoneAbsorbFactor"));
                     materialScatterGenrater.SetFloat("mie_amount", materialSkyLUT.GetFloat("mie_amount"));
                     materialScatterGenrater.SetFloat("mie_absorb", materialSkyLUT.GetFloat("mie_absorb"));
-                    materialScatterGenrater.SetFloat("minh", materialSkyLUT.GetFloat("minh"));
-                    materialScatterGenrater.SetFloat("maxh", materialSkyLUT.GetFloat("maxh"));
+                    materialScatterGenrater.SetFloat("minh", minh);
+                    materialScatterGenrater.SetFloat("maxh", maxh);
                     materialScatterGenrater.SetFloat("H_Reayleigh", materialSkyLUT.GetFloat("H_Reayleigh"));
                     materialScatterGenrater.SetFloat("H_Mie", materialSkyLUT.GetFloat("H_Mie"));
                     materialScatterGenrater.SetFloat("H_OZone", materialSkyLUT.GetFloat("H_OZone"));
@@ -259,8 +262,8 @@ namespace RW_PlanetAtmosphere
                         cloud.SetFloat("ground_light", materialSkyLUT.GetFloat("ground_light"));
                         cloud.SetFloat("mie_amount", materialSkyLUT.GetFloat("mie_amount"));
                         cloud.SetFloat("mie_absorb", materialSkyLUT.GetFloat("mie_absorb"));
-                        cloud.SetFloat("minh", materialSkyLUT.GetFloat("minh"));
-                        cloud.SetFloat("maxh", materialSkyLUT.GetFloat("maxh"));
+                        cloud.SetFloat("minh", minh);
+                        cloud.SetFloat("maxh", maxh);
                         cloud.SetVector("SunColor", materialSkyLUT.GetVector("SunColor"));
                         cloud.SetVector("mie_eccentricity", materialSkyLUT.GetVector("mie_eccentricity"));
                         cloud.SetVector("reayleighScatterFactor", materialSkyLUT.GetVector("reayleighScatterFactor"));
@@ -271,9 +274,11 @@ namespace RW_PlanetAtmosphere
                         GameObject gameObject = new GameObject();
                         MeshFilter filter = gameObject.AddComponent<MeshFilter>();
                         MeshRenderer renderer = gameObject.AddComponent<MeshRenderer>();
+                        Transform transform = gameObject.transform;
                         filter.mesh = mesh;
                         renderer.material = cloud;
-                        gameObject.transform.parent = transform;
+                        transform.parent = this.transform;
+                        transform.localScale = Vector3.one * (0.05f * (maxh - minh) + minh) / maxh; 
                     }
                     AtmosphereSettings.updated = true;
                 }
