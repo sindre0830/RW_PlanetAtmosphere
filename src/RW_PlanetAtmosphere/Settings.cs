@@ -90,7 +90,7 @@ namespace RW_PlanetAtmosphere
             cloudTexPath = cloudTexPath ?? new List<string>();
             cloudTexPath.RemoveAll(x => x.NullOrEmpty());
             Widgets.DrawLineHorizontal(0,31,inRect.width);
-            Vector2 ScrollViewSize = new Vector2(inRect.width,544 + cloudTexPath.Count * 32);
+            Vector2 ScrollViewSize = new Vector2(inRect.width,512 + cloudTexPath.Count * 32);
             if(ScrollViewSize.y > inRect.height-64) ScrollViewSize.x -= 36;
             Widgets.BeginScrollView(new Rect(0,32,inRect.width,inRect.height-64),ref scrollPos,new Rect(Vector2.zero, ScrollViewSize));
 
@@ -194,13 +194,13 @@ namespace RW_PlanetAtmosphere
             float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*7f/4f,448,ScrollViewSize.x*0.5f/4f,32),scatterLUTSize.w.ToString("f5")),out newValue);
             scatterLUTSize.w = (int)newValue;
 
-            Widgets.Label(new Rect(0,512,ScrollViewSize.x*0.5f,32),"cloudTexPath".Translate());
+            Widgets.Label(new Rect(0,480,ScrollViewSize.x*0.5f,32),"cloudTexPath".Translate());
             for(int i = 0; i < cloudTexPath.Count; i++)
             {
-                cloudTexPath[i] = Widgets.TextField(new Rect(ScrollViewSize.x*0.5f, 512 + 32 * i, ScrollViewSize.x*0.5f, 32), cloudTexPath[i]);
+                cloudTexPath[i] = Widgets.TextField(new Rect(ScrollViewSize.x*0.5f, 480 + 32 * i, ScrollViewSize.x*0.5f, 32), cloudTexPath[i]);
             }
             string newPath = "";
-            newPath = Widgets.TextField(new Rect(ScrollViewSize.x*0.5f, 512 + 32 * cloudTexPath.Count, ScrollViewSize.x*0.5f, 32), newPath);
+            newPath = Widgets.TextField(new Rect(ScrollViewSize.x*0.5f, 480 + 32 * cloudTexPath.Count, ScrollViewSize.x*0.5f, 32), newPath);
             if(newPath.Length > 0)
             {
                 cloudTexPath.Add(newPath);
