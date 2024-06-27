@@ -120,6 +120,7 @@ namespace RW_PlanetAtmosphere
                 WorldMaterials.WorldOcean.mainTexture = ContentFinder<Texture2D>.Get("TerrainReplace/Water");
                 // WorldMaterials.RiversBorder.mainTexture = ContentFinder<Texture2D>.Get("TerrainReplace/Water");
                 WorldMaterials.UngeneratedPlanetParts.mainTexture = ContentFinder<Texture2D>.Get("TerrainReplace/Water");
+                WorldMaterials.Stars.mainTexture = ContentFinder<Texture2D>.Get("SkyBoxReplace/8k_stars_milky_way");
 
                 // planetAtmosphere.materialsTest.Add(WorldMaterials.WorldOcean);
                 // planetAtmosphere.materialsTest.Add(WorldMaterials.UngeneratedPlanetParts);
@@ -257,6 +258,16 @@ namespace RW_PlanetAtmosphere
                     mesh.RecalculateTangents();
                     mesh.UploadMeshData(false);
 
+                    for(int i = 0; i < AtmosphereSettings.cloudTexPath.Count; i++)
+                    {
+                        if(AtmosphereSettings.cloudTexPath[i].NullOrEmpty())
+                        {
+                            AtmosphereSettings.cloudTexPath.RemoveAt(i);
+                            if(i < AtmosphereSettings.cloudTexValue.Count) AtmosphereSettings.cloudTexValue.RemoveAt(i);
+                            i--;
+                        }
+                        if(i >= AtmosphereSettings.cloudTexValue.Count) AtmosphereSettings.cloudTexValue.Add(new Vector3(1.0f,0.01f,0.5f));
+                    }
                     materialCloudLUTs.Capacity = AtmosphereSettings.cloudTexPath.Count;
                     for(int i = 0; i < AtmosphereSettings.cloudTexPath.Count; i++)
                     {
@@ -267,6 +278,7 @@ namespace RW_PlanetAtmosphere
                         {
                             renderQueue = 3596
                         };
+                        Vector3 vector = AtmosphereSettings.cloudTexValue[i];
                         cloud.SetFloat("mie_amount", AtmosphereSettings.mie_amount);
                         cloud.SetFloat("mie_absorb", AtmosphereSettings.mie_absorb);
                         cloud.SetFloat("H_Reayleigh", AtmosphereSettings.H_Reayleigh);
@@ -275,6 +287,9 @@ namespace RW_PlanetAtmosphere
                         cloud.SetFloat("D_OZone", AtmosphereSettings.D_OZone);
                         cloud.SetFloat("minh", minh);
                         cloud.SetFloat("maxh", maxh);
+                        cloud.SetFloat("ground_refract", vector.x);
+                        cloud.SetFloat("ground_light", vector.y);
+                        cloud.SetFloat("opacity", vector.z);
                         cloud.SetVector("reayleighScatterFactor", AtmosphereSettings.reayleighScatterFactor);
                         cloud.SetVector("OZoneAbsorbFactor", AtmosphereSettings.OZoneAbsorbFactor);
                         cloud.SetVector("scatterLUT_Size", new Vector4((int)scatterLUTSize.x, (int)scatterLUTSize.y , (int)scatterLUTSize.z, (int)scatterLUTSize.w));
@@ -305,13 +320,10 @@ namespace RW_PlanetAtmosphere
                     materialSkyLUT.SetFloat("ground_light", AtmosphereSettings.ground_light);
                     materialSkyLUT.SetVector("SunColor", AtmosphereSettings.SunColor);
                     materialSkyLUT.SetVector("mie_eccentricity", AtmosphereSettings.mie_eccentricity);
-                    
                     for(int i = 0; i < materialCloudLUTs.Count; i++)
                     {
                         Material cloud = materialCloudLUTs[i];
                         cloud.SetFloat("exposure", AtmosphereSettings.exposure);
-                        cloud.SetFloat("ground_refract", AtmosphereSettings.ground_refract);
-                        cloud.SetFloat("ground_light", AtmosphereSettings.ground_light);
                         cloud.SetVector("SunColor", AtmosphereSettings.SunColor);
                         cloud.SetVector("mie_eccentricity", AtmosphereSettings.mie_eccentricity);
                     }
