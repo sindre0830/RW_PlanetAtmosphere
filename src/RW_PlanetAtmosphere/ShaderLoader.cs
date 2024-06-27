@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.PlayerLoop;
 using Verse.Noise;
+using Verse.AI.Group;
 
 namespace RW_PlanetAtmosphere
 {
@@ -139,6 +140,7 @@ namespace RW_PlanetAtmosphere
         private class PlanetAtmosphere : MonoBehaviour
         {
             // public readonly List<Material> materialsTest = new List<Material>();
+            private Transform cachedTransform = null;
             void parmUpdated()
             {
                 if(!AtmosphereSettings.updated && isEnable)
@@ -311,6 +313,7 @@ namespace RW_PlanetAtmosphere
             }
             void Update()
             {
+                cachedTransform = cachedTransform ?? transform;
                 if(isEnable && Find.World != null)
                 {
                     parmUpdated();
@@ -327,6 +330,7 @@ namespace RW_PlanetAtmosphere
                         cloud.SetVector("mie_eccentricity", AtmosphereSettings.mie_eccentricity);
                     }
                     Shader.SetGlobalVector("_WorldSpaceLightPos0",GenCelestial.CurSunPositionInWorldSpace());
+                    cachedTransform.localScale = Vector3.one * (Find.PlaySettings.usePlanetDayNightSystem ? 1f : 0f);
                 }
             }
         }
