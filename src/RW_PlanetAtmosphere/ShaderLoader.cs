@@ -120,7 +120,6 @@ namespace RW_PlanetAtmosphere
                 WorldMaterials.WorldOcean.mainTexture = ContentFinder<Texture2D>.Get("TerrainReplace/Water");
                 // WorldMaterials.RiversBorder.mainTexture = ContentFinder<Texture2D>.Get("TerrainReplace/Water");
                 WorldMaterials.UngeneratedPlanetParts.mainTexture = ContentFinder<Texture2D>.Get("TerrainReplace/Water");
-                WorldMaterials.Stars.mainTexture = ContentFinder<Texture2D>.Get("SkyBoxReplace/8k_stars_milky_way");
 
                 // planetAtmosphere.materialsTest.Add(WorldMaterials.WorldOcean);
                 // planetAtmosphere.materialsTest.Add(WorldMaterials.UngeneratedPlanetParts);
