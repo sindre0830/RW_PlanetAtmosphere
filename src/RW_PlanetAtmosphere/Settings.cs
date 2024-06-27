@@ -257,11 +257,11 @@ namespace RW_PlanetAtmosphere
                 Vector3 vector = new Vector3(1.0f,0.01f,0.5f);
                 if(i < cloudTexValue.Count) vector = cloudTexValue[i];
                 else cloudTexValue.Add(vector);
-                float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f, 512 + 64 * i, ScrollViewSize.x*0.5f, 32),vector.x.ToString("f5")),out newValue);
+                float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f, 512 + 64 * i, ScrollViewSize.x*0.5f/3f, 32),vector.x.ToString("f5")),out newValue);
                 vector.x = Math.Abs(newValue);
-                float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*4f/3f, 512 + 64 * i, ScrollViewSize.x*0.5f, 32),vector.y.ToString("f5")),out newValue);
+                float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*4f/3f, 512 + 64 * i, ScrollViewSize.x*0.5f/3f, 32),vector.y.ToString("f5")),out newValue);
                 vector.y = Math.Abs(newValue);
-                float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*5f/3f, 512 + 64 * i, ScrollViewSize.x*0.5f, 32),vector.z.ToString("f5")),out newValue);
+                float.TryParse(Widgets.TextField(new Rect(ScrollViewSize.x*0.5f*5f/3f, 512 + 64 * i, ScrollViewSize.x*0.5f/3f, 32),vector.z.ToString("f5")),out newValue);
                 vector.z = Math.Abs(newValue);
                 cloudTexValue[i] = vector;
             }
