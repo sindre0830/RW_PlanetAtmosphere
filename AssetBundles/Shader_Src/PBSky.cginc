@@ -471,6 +471,7 @@ float3 getScatterInfo(float3 viewDir, float3 lightDir, float3 lightColor, float3
     lightColor = abs(lightColor);
     float cosw = dot(viewDir,lightDir);
     float3 all = scatterFromLUT(float4(a,h,l,w)) * lightColor;
+    all = max(all,0.0);
 
     // return all;
 
@@ -487,6 +488,7 @@ float3 getScatterInfo(float3 viewDir, float3 lightDir, float3 lightColor, float3
         // return scatterFromLUT(float4(a,h,l,w));
         // w = acos(clamp(dot(normalize(viewDir.xz),normalize(lightDir.xz)),-1.0,1.0));
         all -= scatterFromLUT(float4(a,h,l,w)) * lightColor * transGround;
+        all = max(all,0.0);
     }
 
     // return float4(a,h,l,w).yyy;
