@@ -102,8 +102,6 @@ namespace RW_PlanetAtmosphere
                 // WorldCameraManager.WorldSkyboxCamera.fieldOfView = 20;
                 WorldCameraManager.WorldCamera.depthTextureMode = DepthTextureMode.Depth;
                 WorldCameraManager.WorldSkyboxCamera.depthTextureMode = DepthTextureMode.Depth;
-                WorldCameraManager.WorldCamera.nearClipPlane = 0.0f;
-                WorldCameraManager.WorldSkyboxCamera.nearClipPlane = 0.0f;
 
                 WorldMaterials.Rivers.shader = WorldMaterials.WorldTerrain.shader;
                 WorldMaterials.WorldOcean.shader = WorldMaterials.WorldTerrain.shader;
