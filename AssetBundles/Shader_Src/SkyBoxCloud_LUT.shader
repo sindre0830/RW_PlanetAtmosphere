@@ -74,6 +74,8 @@
     {
         Tags {"Queue"="Transparent" "RenderType"="Opaque"}
         Blend SrcAlpha OneMinusSrcAlpha
+        // Blend SrcAlpha One
+        ZWrite Off
         LOD 0
         Pass
         {
@@ -101,6 +103,7 @@
                 IngAirFogPropInfo infoCamera = getIngAirFogPropInfoByRelPos(pos,eye,sun,distance(cloudPos,pos));
                 float3 trans;
                 float3 scatter = max(LightScatter(infoCamera, SunColor, col.xyz * ground_refract, col.xyz * ground_light, trans),0.0);
+                scatter = max(float3(0.0,0.0,0.0),scatter);
                 col.xyz = scatter;
                 col.xyz = hdr(col.xyz);
                 col.xyz = ACESTonemap(col.xyz);
@@ -143,6 +146,7 @@
                 IngAirFogPropInfo infoCamera = getIngAirFogPropInfoByRelPos(pos,eye,sun,distance(cloudPos,pos));
                 float3 trans;
                 float3 scatter = max(LightScatter(infoCamera, SunColor, col.xyz * ground_refract, col.xyz * ground_light, trans),0.0);
+                scatter = max(float3(0.0,0.0,0.0),scatter);
                 col.xyz = scatter;
                 col.xyz = hdr(col.xyz);
                 col.xyz = ACESTonemap(col.xyz);

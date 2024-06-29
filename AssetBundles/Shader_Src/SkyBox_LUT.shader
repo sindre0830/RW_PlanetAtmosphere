@@ -93,7 +93,7 @@
                 float3 trans;
                 scatter = LightScatter(infos, LIGHT0_COLOR, backGround * ground_refract, backGround * ground_light, trans);
                 float3 p = infos.depth * infos.viewDir + float3(0.0,infos.h,0.0);
-                rgb += max(0.0,ceil(dot(LIGHT0_DIRECTION,EYEDIR) - cos(0.004652439059837008))) * LIGHT0_COLOR * (1.0-step(length(p), maxh));
+                // rgb += max(0.0,ceil(dot(LIGHT0_DIRECTION,EYEDIR) - cos(0.004652439059837008))) * LIGHT0_COLOR * (1.0-step(length(p), maxh));
                 if(infos.h <= maxh) rgb *= trans * (1.0-step(length(p), maxh));
                 scatter = max(float3(0.0,0.0,0.0),scatter);
                 scatter = hdr(scatter);
